@@ -21,7 +21,12 @@ Source10:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2
 PreReq:		rc-scripts
-Requires(pre):	user-zope
+Requires(pre): /usr/bin/getgid
+Requires(pre): /bin/id
+Requires(pre): /usr/sbin/groupadd
+Requires(pre): /usr/sbin/useradd
+Requires(postun):      /usr/sbin/userdel
+Requires(postun):      /usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
 Requires:	python-modules >= 2.2
@@ -113,6 +118,16 @@ touch $RPM_BUILD_ROOT/var/log/zope
 %clean
 rm -rf $RPM_BUILD_ROOT
 
+%pre
+if [ -z "`getgid zope`" ]; then
+       echo "Making group zope"
+       /usr/sbin/groupadd -r -f zope
+fi
+if [ -z "`id -u zope 2>/dev/null`" ]; then
+       echo "Making user zope"
+       /usr/sbin/useradd -r -d /var/lib/zope -s /bin/false -c "Zope User" -g zope zope
+fi
+
 %post
 /sbin/chkconfig --add zope
 if [ -f /var/lock/subsys/zope ]; then
@@ -128,6 +143,14 @@ if [ "$1" = "0" ]; then
 		/etc/rc.d/init.d/zope stop
 	fi
 	/sbin/chkconfig --del zope
+fi
+
+%postun
+if [ "$1" = "0" ] ; then
+       echo "Removing user zope"
+       /usr/sbin/userdel zope >/dev/null 2>&1 || :
+       echo "Removing group zope"
+       /usr/sbin/groupdel zope >/dev/null 2>&1 || :    
 fi
 
 %files
