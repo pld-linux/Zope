@@ -28,7 +28,7 @@ Source8:	%{name}-installzopeproduct
 Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 2.2.3
+BuildRequires:	python-devel >= 2.3.2
 BuildRequires:	perl-base
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
@@ -39,9 +39,11 @@ Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
-Requires:	python >= 2.2.3
-Requires:	python-modules >= 2.2.3
-Requires:	python-libs >= 2.2.3
+Requires:	python >= 2.3.2
+Requires:	python-modules >= 2.3.2
+Requires:	python-libs >= 2.3.2
+Requires:	expat >= 1.95.7
+Requires:	python-PyXML >= 0.8.3
 %pyrequires_eq  python
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
