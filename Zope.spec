@@ -8,18 +8,16 @@ Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
-Source1:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
-Source2:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
-Source3:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
-Source4:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
-Source5:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
-Source6:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
-# note: above documentation is deprecated, zope.org suggests using ZopeBook:
-#Source1:	http://www.zope.org/Members/michel/ZB/ZopeBook.tgz
-# note: changes in location of ZopeBook. Sugestions on Zope.org using this:
-Source9:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
-Source7:	%{name}.init
-Source8:	%{name}-zserver.sh
+Source1:	%{name}.init
+Source2:	%{name}.logrotate
+Source3:	%{name}-zserver.sh
+Source4:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
+Source5:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
+Source6:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
+Source7:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
+Source8:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
+Source9:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
+Source10:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2
 PreReq:		rc-scripts
@@ -30,19 +28,19 @@ Requires(pre):	/usr/sbin/useradd
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
-Requires:	python >= 2.2
+Requires:	logrotate
 Requires:	python-modules >= 2.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%define python_prefix      %(echo `python -c "import sys; print sys.prefix"`)
-%define python_version     %(echo `python -c "import sys; print sys.version[:3]"`)
-%define python_libdir      %{python_prefix}/lib/python%{python_version}
-%define python_includedir  %{python_prefix}/include/python%{python_version}
-%define python_sitedir     %{python_libdir}/site-packages
-%define python_configdir   %{python_libdir}/config
+%define		python_prefix		%(echo `python -c "import sys; print sys.prefix"`)
+%define		python_version		%(echo `python -c "import sys; print sys.version[:3]"`)
+%define		python_libdir		%{python_prefix}/lib/python%{python_version}
+%define		python_includedir	%{python_prefix}/include/python%{python_version}
+%define		python_sitedir		%{python_libdir}/site-packages
+%define		python_configdir	%{python_libdir}/config
 
-%define python_compile     python -c "import compileall; compileall.compile_dir('.')"
-%define python_compile_opt python -O -c "import compileall; compileall.compile_dir('.')"
+%define		python_compile		python -c "import compileall; compileall.compile_dir('.')"
+%define		python_compile_opt	python -O -c "import compileall; compileall.compile_dir('.')"
 
 %description
 The Z Object Programming Environment (Zope) is a free, Open Source
@@ -79,11 +77,11 @@ eles ao invés desse RPM.
 %setup -q -n %{name}-%{version}-src -a4
 mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide
 mkdir ZopeBook
-tar xzf %{SOURCE1} -C ZopeContentManagersGuide
-tar xzf %{SOURCE2} -C GuideToDTML
-tar xzf %{SOURCE3} -C GuideToZSQL
-tar xzf %{SOURCE5} -C ZopeDevelopersGuide
-tar xzf %{SOURCE6} -C ZopeAdminGuide
+tar xzf %{SOURCE4} -C ZopeContentManagersGuide
+tar xzf %{SOURCE5} -C GuideToDTML
+tar xzf %{SOURCE6} -C GuideToZSQL
+tar xzf %{SOURCE7} -C ZopeDevelopersGuide
+tar xzf %{SOURCE8} -C ZopeAdminGuide
 tar xzf %{SOURCE9} -C ZopeBook
 
 %build
@@ -97,7 +95,11 @@ rm -f ZServer/medusa/monitor_client_win32.py
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope} \
-	    $RPM_BUILD_ROOT{/etc/rc.d/init.d,/var/log,/var/lib/zope}
+	$RPM_BUILD_ROOT{/etc/{rc.d/init.d,logrotate},/var/log,/var/lib/zope}
+
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate/zope
+install %{SOURCE3} $RPM_BUILD_ROOT%{_sbindir}/zope-zserver
 
 cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
 cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
@@ -106,13 +108,12 @@ cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
 
 install zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
 install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
-install %{SOURCE8} $RPM_BUILD_ROOT%{_sbindir}/zope-zserver
-install %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
 install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/Data.fs
 
-touch $RPM_BUILD_ROOT/var/log/zope
+python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost \
+	$RPM_BUILD_ROOT/var/lib/zope/access
 
-python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD_ROOT/var/lib/zope/access
+touch $RPM_BUILD_ROOT/var/log/zope
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -162,3 +163,4 @@ fi
 %{_libdir}/zope
 %attr(1771,root,zope) %dir /var/lib/zope
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
+%ghost /var/log/zope
