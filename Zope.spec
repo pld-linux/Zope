@@ -8,16 +8,23 @@ Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
+# Source0-md5:	a17f36b86b6e489797d8e52f1ba48efe
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}-zserver.sh
 Source4:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
+# Source4-md5:	4c52eebc2e874a0590ac9c04e222e9f1
 Source5:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
+# Source5-md5:	10f363dd061a1af8d472c51c32fa0a0e
 Source6:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
+# Source6-md5:	0cddb5688fc0f886db468da08251fb81
 Source7:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
 Source8:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
+# Source8-md5:	0344ca88acb8a71688d2925975a55443
 Source9:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
+# Source9-md5:	b28bfc4ba4bee880767fcf89d79532d2
 Source10:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
+# Source10-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2
 PreReq:		rc-scripts
