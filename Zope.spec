@@ -4,7 +4,7 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.6.2b5
-Release:	4
+Release:	5
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
@@ -153,13 +153,17 @@ if [ -f /var/lib/zope/Data.fs ]; then
 	    /etc/rc.d/init.d/zope stop >&2
 	    was_stopped=1
 	fi
-	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -f * ./main
+	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -f * ./main 2>/dev/null
+	touch /var/lib/zope/access
 	if [ "x$was_stopped" = "x1" ]; then
-	    /etc/rc.d/init.d/zope start
+	    /etc/rc.d/init.d/zope start >&2
 	fi
 	echo "Migration completed (new db location is /var/lib/zope/main)"
-elif [ -f /var/lock/subsys/zope ]; then
-	/etc/rc.d/init.d/zope restart >&2
+fi
+if [ -f /var/lock/subsys/zope ]; then
+	if [ "x$was_stopped" != "x1" ]; then
+	    /etc/rc.d/init.d/zope restart >&2
+	fi
 else
 	echo "Create inituser using \"zpasswd inituser\" in directory \"/var/lib/zope/main\"" >&2
 	echo "Run then \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
