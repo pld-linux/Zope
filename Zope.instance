@@ -9,7 +9,7 @@
 #
 
 # Zope database directory
-INSTANCE_HOME=/var/lib/zope/main
+#INSTANCE_HOME=/var/lib/zope/main
 
 # user to run Zope
 # note: you should create a dedicated default group
@@ -22,9 +22,9 @@ ZOPE_USER=zope
 IP_ADDRESS=
 
 # ports to listen on (unset or "-" means disabled)
-HTTP_PORT=80
-FTP_PORT=21
-IPC_PORT=80
+HTTP_PORT=8080
+FTP_PORT=8021
+IPC_PORT=8080
 #WEBDAV_PORT=9800
 
 # number of the initial threads to run
@@ -36,16 +36,10 @@ NUMBER_OF_THREADS=4
 # internationalization
 # LOC='pl_PL'
 
-# shoulg we use watchdog? it restarts Zope in case of failure
-WATCHDOG=no
-
-# DEBUG_MODE
-DEBUG_MODE=0
-
 # log filename path (empty defaults to: /var/log/zope/INSTANCE_NAME.log)
-LOG_FILE=
+#LOG_FILE=/var/log/zope/INSTANCE_NAME/zope.log
 
 # detailed log filename path
 # (empty means no detailed logging)
-# ('yes' means /var/log/zope/INSTANCE_NAME-detailed.log)
-DETAILED_LOG_FILE=yes
+# (default: /var/log/zope/INSTANCE_NAME/zope-detailed.log)
+#DETAILED_LOG_FILE=/var/log/zope/INSTANCE_NAME/zope-detailed.log

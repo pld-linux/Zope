@@ -15,20 +15,19 @@ else
 	namepass=""
 fi
 
-umask 002
-python /usr/lib/zope/mkzopeinstance.py \
-	-s /etc/zope/skel \
-	-d "$destdir" \
-	$namepass || exit $?
+umask 006
 
 install -d "/etc/zope/$name"
-mv "${destdir}"/etc/* "/etc/zope/$name"
+cp -a /etc/zope/skel/etc/* "/etc/zope/$name"
 
-chmod a+x "${destdir}"/bin/*
+install -d "${destdir}"
+cp -a /etc/zope/skel/{Extensions,Products,import,var} "$destdir"
+chown root.zope "${destdir}/var"
+chown zope.zope "${destdir}/var"/*
+chmod 1771 "${destdir}/var" 
 
 install -d "/var/log/zope/$name"
-
 chown root.zope "${destdir}" "/var/log/zope/$name"
-chmod 770 "${destdir}" "/var/log/zope/$name"
-chown -R zope.zope "${destdir}"/*
-chmod a+X  "${destdir}"/*
+chmod 770 "/var/log/zope/$name"
+
+echo "Set the initial user password with: zpasswd ${destdir}/var/inituser" >&2

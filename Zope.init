@@ -1,65 +1,134 @@
 #!/bin/sh
+# zope
 #
-# zope          Start/Stop the Zope web-application server.
+# chkconfig: 345 90 10
+# description: Starts and stops the Zope instances
+# processname: z2.py
+# config: /etc/sysconfig/zope
 #
-# chkconfig: 2345 72 72
-# description: zope is a web server specifically for handling \
-#              HTTP requests to the Zope web-application service.
 # probe: true
+#
+
 
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-ZOPE_HOME=/usr/lib/zope
-INSTANCE_HOME=/var/lib/zope
-INSTANCE_NAME=`basename ${INSTANCE_HOME}`
+# Source networking configuration.
+. /etc/sysconfig/network
 
-RETVAL=0
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down Zope
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+# Zope settings.
+INSTANCES="main"
+[ -f /etc/sysconfig/zope ] && . /etc/sysconfig/zope
+
+start_instances()
+{
+    RETVAL=1
+    for INSTANCE_NAME in $INSTANCES
+    do
+	INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
+
+	if [ -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
+		msg_already_running "Zope instance $INSTANCE_NAME"
+		continue	
+	fi
+
+	msg_starting "Zope instance $INSTANCE_NAME" 
+	daemon /usr/sbin/zope-zserver "$INSTANCE_NAME"
+	RET=$?
+	if [ $RET -eq 0 ]; then
+		touch /var/lock/subsys/"zope-$INSTANCE_NAME"
+		RETVAL=0
+	fi
+    done
+    return $RETVAL
+}
+
+stop_instances()
+{
+    RETVAL=1
+    for INSTANCE_NAME in $INSTANCES
+    do
+	INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
+
+	if [ ! -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
+		msg_not_running "Zope instance $INSTANCE_NAME"
+		continue	
+	fi
+	
+	msg_stopping "Zope instance $INSTANCE_NAME"
+	kill `cat "${INSTANCE_HOME}/var/Z2.pid"` 2>/dev/null
+	RET=$?
+	if [ $RET -eq 0 ]; then
+		sleep 1
+		kill -9 `cat "${INSTANCE_HOME}/var/Z2.pid"` 2>/dev/null
+		RETVAL=0
+		deltext
+		ok
+	else
+		deltext
+		died
+	fi
+	rm -f /var/lock/subsys/"zope-$INSTANCE_NAME"
+    done
+    return $RETVAL
+}
 
 # See how we were called.
 case "$1" in
-    start)
-	if [ -f /var/lock/subsys/zope ]; then
-		msg_Already_Running Zope
-	else 	
-		msg_starting Zope
-		busy
-		daemon zope-zserver
-		RETVAL=$?;
-		sleep 5
-		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/zope
-	fi
+  start)
+  		msg_starting "Zope"
+		started
+		start_instances
+		RETVAL=$?
+		if [ "$RETVAL" = 0 ] ; then
+			msg_starting "Zope"
+			ok
+			touch /var/lock/subsys/zope
+		else
+			msg_starting "Zope"
+			fail
+		fi
 	;;
   stop)
-        if [ -f /var/lock/subsys/zope ]; then
-                msg_stopping Zope
-                kill `cat ${INSTANCE_HOME}/Z2.pid`
-		sleep 1
-		deltext
-		ok
-                rm -f /var/lock/subsys/zope >/dev/null 2>&1
+	if [ -f /var/lock/subsys/named ]; then
+        	msg_stopping "Zope"
+		started
+		stop_instances
+		RETVAL=$?
+		if [ "$RETVAL" = 0 ] ; then
+			msg_stopping "Zope"
+			ok
+		else
+			msg_stopping "Zope"
+			fail
+		fi
+        	rm -f /var/lock/subsys/zope >/dev/null 2>&1
         else
-                msg_not_running Zope
+	        msg_not_running "Zope"
                 exit 1
         fi
 	;;
   status)
-	if ps -p `cat ${INSTANCE_HOME}/Z2.pid | awk '{print $2}'` >/dev/null; then
-	    RETVAL=$?
-	    echo "Zope (pid `cat ${INSTANCE_HOME}/Z2.pid`) is running"
-	else     
-	    msg_not_running Zope
-	    RETVAL=1
-	fi
-    
+	status zope zope-zserver
 	;;
-  restart)
+  restart|force-reload)
 	$0 stop
 	$0 start
+	exit $?
 	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart}"
-	exit 1
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
 	;;
 esac
 
