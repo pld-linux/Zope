@@ -155,7 +155,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide ZopeBook
+%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide ZopeBook
 %attr(755,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
