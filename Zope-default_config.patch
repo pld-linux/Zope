@@ -1,0 +1,20 @@
+diff -durN Zope-2.7.0-b2.orig/skel/etc/zope.conf.in Zope-2.7.0-b2/skel/etc/zope.conf.in
+--- Zope-2.7.0-b2.orig/skel/etc/zope.conf.in	Wed Aug 20 23:41:13 2003
++++ Zope-2.7.0-b2/skel/etc/zope.conf.in	Sat Nov 15 00:11:50 2003
+@@ -135,6 +135,7 @@
+ # Example:
+ #
+ #    effective-user chrism
++effective-user zope
+ 
+ 
+ # Directive: enable-product-installation
+@@ -373,7 +374,7 @@
+ #
+ # Example:
+ #
+-#    ip-address 127.0.0.1
++ip-address 127.0.0.1
+ 
+ 
+ # Directive: http-realm
