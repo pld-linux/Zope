@@ -8,23 +8,24 @@ Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
-# Source0-md5:	a17f36b86b6e489797d8e52f1ba48efe
+# Source0-md5:	60ddbd685febb73e10ecdb5da6eda895
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}.sysconfig
 Source4:	%{name}-start.sh
-Source5:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
+Source5:	http://zope.org/Documentation/Guides/ZCMG/Tarred%20HTML%202.1.1/ZCMG.html.tgz
 # Source5-md5:	4c52eebc2e874a0590ac9c04e222e9f1
-Source6:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
+Source6:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1/DTML.html.tgz
 # Source6-md5:	10f363dd061a1af8d472c51c32fa0a0e
-Source7:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
+Source7:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
 # Source7-md5:	0cddb5688fc0f886db468da08251fb81
-Source8:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
+Source8:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
 # Source8-md5:	0344ca88acb8a71688d2925975a55443
-Source9:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
+Source9:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
 # Source9-md5:	b28bfc4ba4bee880767fcf89d79532d2
-Source10:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
+Source10:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source10-md5:	268c38a4c7d9f7334cdc98b0a152f8da
+
 Patch0:		%{name}-http-virtual-cache.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.3
@@ -170,7 +171,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide ZopeBook
+%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide Zopebook
 %attr(755,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
