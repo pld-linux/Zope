@@ -3,8 +3,8 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.6.0
-Release:	3
+Version:	2.6.1
+Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
@@ -16,6 +16,8 @@ Source5:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
 Source6:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
 # note: above documentation is deprecated, zope.org suggests using ZopeBook:
 #Source1:	http://www.zope.org/Members/michel/ZB/ZopeBook.tgz
+# note: changes in location of ZopeBook. Sugestions on Zope.org using this:
+Source9:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
 Source7:	%{name}.init
 Source8:	%{name}-zserver.sh
 URL:		http://www.zope.org/
@@ -76,11 +78,13 @@ eles ao invés desse RPM.
 %prep
 %setup -q -n %{name}-%{version}-src -a4
 mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide
+mkdir ZopeBook
 tar xzf %{SOURCE1} -C ZopeContentManagersGuide
 tar xzf %{SOURCE2} -C GuideToDTML
 tar xzf %{SOURCE3} -C GuideToZSQL
 tar xzf %{SOURCE5} -C ZopeDevelopersGuide
 tar xzf %{SOURCE6} -C ZopeAdminGuide
+tar xzf %{SOURCE9} -C ZopeBook
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
@@ -110,6 +114,8 @@ touch $RPM_BUILD_ROOT/var/log/zope
 
 python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD_ROOT/var/lib/zope/access
 
+gzip -9nf doc/*.txt *.txt
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -129,7 +135,8 @@ fi
 if [ -f /var/lock/subsys/zope ]; then
 	/etc/rc.d/init.d/zope restart >&2
 else
-	echo "Run \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
+	echo "Create inituser using \"zpasswd inituser\" in directory \"/var/lib/zope\"" >&2
+	echo "Run then \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
 fi
 
 %preun
@@ -156,4 +163,4 @@ fi
 %{_libdir}/zope
 %attr(1771,root,zope) %dir /var/lib/zope
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
-%doc *.txt doc/*.txt ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide
+%doc *.gz doc/*.gz ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide ZopeBook

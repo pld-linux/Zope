@@ -10,9 +10,7 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
-ZOPE_HOME=/usr/lib/zope
-INSTANCE_HOME=/var/lib/zope
-INSTANCE_NAME=`basename ${INSTANCE_HOME}`
+CLIENT_HOME=/var/lib/zope
 
 RETVAL=0
 
@@ -33,7 +31,7 @@ case "$1" in
   stop)
         if [ -f /var/lock/subsys/zope ]; then
                 msg_stopping Zope
-                kill `cat ${INSTANCE_HOME}/Z2.pid`
+                kill `cat ${CLIENT_HOME}/Z2.pid`
 		sleep 1
 		deltext
 		ok
@@ -44,9 +42,9 @@ case "$1" in
         fi
 	;;
   status)
-	if ps -p `cat ${INSTANCE_HOME}/Z2.pid | awk '{print $2}'` >/dev/null; then
+	if ps -p `cat ${CLIENT_HOME}/Z2.pid | awk '{print $2}'` >/dev/null; then
 	    RETVAL=$?
-	    echo "Zope (pid `cat ${INSTANCE_HOME}/Z2.pid`) is running"
+	    echo "Zope (pid `cat ${CLIENT_HOME}/Z2.pid`) is running"
 	else     
 	    msg_not_running Zope
 	    RETVAL=1
