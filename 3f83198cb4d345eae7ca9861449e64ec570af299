@@ -1,0 +1,6 @@
+  In behalf of Adam Szpakowski <worf@optics.polsl.gliwice.pl>:
+- version 2.6.1
+- lot of documention added
+- extended Zope-zserver.sh... corrections for 2.6.1 and locals support (pl_PL)
+- changing default ports to 18080 and 18021 for compatibility with squid
+- changes in Zope.init... cleaning + switching to CLIENT_HOME
