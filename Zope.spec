@@ -19,9 +19,14 @@ Source6:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
 Source7:	%{name}.init
 Source8:	%{name}-zserver.sh
 URL:		http://www.zope.org/
-Prereq:		rc-scripts
-Prereq:		/sbin/chkconfig
-Prereq:		/usr/sbin/useradd
+PreReq:		rc-scripts
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/userdel
+Requires(postun):	/usr/sbin/groupdel
 Requires:	python >= 2.2
 Requires:	python-modules >= 2.2
 BuildRequires:	python-devel >= 2.2
