@@ -10,6 +10,19 @@
 # Source function library.
 . /etc/rc.d/init.d/functions
 
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network ]; then
+		msg_network_down Zope
+		exit 1
+	fi
+else
+	exit 0
+fi
+
 CLIENT_HOME=/var/lib/zope
 
 RETVAL=0
@@ -55,7 +68,7 @@ case "$1" in
 	$0 start
 	;;
   *)
-	msg_Usage "$0 {start|stop||restart|reload|status}"
+	msg_usage "$0 {start|stop|restart|reload|status}"
 	exit 1
 	;;
 esac
