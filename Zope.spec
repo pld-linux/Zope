@@ -207,7 +207,7 @@ fi
 %attr(640,root,root) %dir /etc/zope
 %attr(640,root,root) %dir /etc/zope/skel
 %attr(640,root,root) %dir /etc/zope/main
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/skel/*
+%config(noreplace) %verify(not md5 size mtime) /etc/zope/skel/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/logrotate.d/zope
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/sysconfig/zope
 %ghost /var/log/zope/main/*.log
