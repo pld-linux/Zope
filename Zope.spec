@@ -13,7 +13,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.2
 # %%define		sub_ver b2
-Release:	2
+Release:	3
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-0.tgz
@@ -33,13 +33,14 @@ Patch3:		%{name}-no_initgroups.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.3.3
 BuildRequires:	perl-base
+BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
 Requires:	python >= 2.3.3
@@ -48,6 +49,8 @@ Requires:	python-libs >= 2.3.3
 Requires:	expat >= 1.95.7
 Requires:	python-PyXML >= 0.8.3
 %pyrequires_eq	python
+Provides:	group(zope)
+Provides:	user(zope)
 Obsoletes:	Zope-Hotfix = 040713
 Obsoletes:	Zope-Hotfix = 040714
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -144,13 +147,23 @@ touch $RPM_BUILD_ROOT/var/log/zope/main/Z2.log
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -z "`getgid zope`" ]; then
+if [ -n "`getgid zope`" ]; then
+	if [ "`getgid zope`" != "112" ]; then
+		echo "Error: group zope doesn't have gid=112. Correct this before installing zope." 1>&2
+		exit 1
+	fi
+else
 	echo "Making group zope"
-	/usr/sbin/groupadd -r -f zope
+	/usr/sbin/groupadd -g 112 zope
 fi
-if [ -z "`id -u zope 2>/dev/null`" ]; then
+if [ -n "`/bin/id -u zope 2>/dev/null`" ]; then
+	if [ "`/bin/id -u zope`" != "112" ]; then
+		echo "Error: user zope doesn't have uid=112. Correct this before installing zope." 1>&2
+		exit 1
+	fi
+else
 	echo "Making user zope"
-	/usr/sbin/useradd -r -d /var/lib/zope/main -s /bin/false -c "Zope User" -g zope zope
+	/usr/sbin/useradd -u 112 -d /var/lib/zope/main -s /bin/false -c "Zope User" -g zope zope
 fi
 
 %post
@@ -199,10 +212,8 @@ fi
 
 %postun
 if [ "$1" = "0" ] ; then
-	echo "Removing user zope"
-	/usr/sbin/userdel zope >/dev/null 2>&1 || :
-	echo "Removing group zope"
-	/usr/sbin/groupdel zope >/dev/null 2>&1 || :
+	%userremove zope
+	%groupremove zope
 fi
 
 %files
