@@ -4,7 +4,7 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.6.0
-Release:	2
+Release:	3
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
@@ -23,6 +23,7 @@ Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 Prereq:		/usr/sbin/useradd
 Requires:	python >= 2.2
+Requires:	python-modules >= 2.2
 BuildRequires:	python-devel >= 2.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
