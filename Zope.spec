@@ -4,7 +4,7 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.6.3
-Release:	1
+Release:	2
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
@@ -28,6 +28,7 @@ Source12:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
 # Source12-md5:	b28bfc4ba4bee880767fcf89d79532d2
 Source13:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source13-md5:	268c38a4c7d9f7334cdc98b0a152f8da
+Patch0:		%{name}-unicode_encode.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.1
 BuildRequires:	perl-base
@@ -96,6 +97,8 @@ tar xzf %{SOURCE10} -C GuideToZSQL
 tar xzf %{SOURCE11} -C ZopeDevelopersGuide
 tar xzf %{SOURCE12} -C ZopeAdminGuide
 tar xzf %{SOURCE13} -C ZopeBook
+
+%patch0 -p1
 
 %build
 python wo_pcgi.py
