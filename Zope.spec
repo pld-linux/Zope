@@ -7,7 +7,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.0
 %define		sub_ver b2
-Release:	1.%{sub_ver}
+Release:	1.%{sub_ver}.1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
@@ -19,6 +19,7 @@ Source4:	%{name}-mkzopeinstance
 Source5:	%{name}-mkzeoinstance
 Source6:	%{name}-runzope
 Source7:	%{name}-zopectl
+Source8:	%{name}-installzopeproduct
 Patch0:		%{name}-python-2.3.2.patch
 Patch1:		%{name}-default_config.patch
 Patch2:		%{name}-instance_paths.patch
@@ -116,6 +117,7 @@ install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mkzopeinstance
 install %{SOURCE5} $RPM_BUILD_ROOT%{_sbindir}/mkzeoinstance
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sbindir}/runzope
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sbindir}/zopectl
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sbindir}/installzopeproduct
 
 touch $RPM_BUILD_ROOT/var/log/zope/main/event.log
 touch $RPM_BUILD_ROOT/var/log/zope/main/Z2.log
@@ -185,7 +187,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc
+%doc doc/*
 %attr(754,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
