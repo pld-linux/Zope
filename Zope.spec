@@ -147,7 +147,18 @@ fi
 
 %post
 /sbin/chkconfig --add zope
-if [ -f /var/lock/subsys/zope ]; then
+if [ -f /var/lib/zope/Data.fs ]; then
+	echo "Found the database in old location. Migrating..."
+	if [ -f /var/lock/subsys/zope ]; then
+	    /etc/rc.d/init.d/zope stop >&2
+	    was_stopped=1
+	fi
+	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -r * ./main
+	if [ "x$was_stopped" = "x1" ]; then
+	    /etc/rc.d/init.d/zope start
+	fi
+	echo "Migration completed (new db location is /var/lib/zope/main)"
+elif [ -f /var/lock/subsys/zope ]; then
 	/etc/rc.d/init.d/zope restart >&2
 else
 	echo "Create inituser using \"zpasswd inituser\" in directory \"/var/lib/zope/main\"" >&2
