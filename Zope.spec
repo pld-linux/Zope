@@ -3,12 +3,12 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.6.2b5
-Release:	5
+Version:	2.6.2
+Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
-# Source0-md5:	60ddbd685febb73e10ecdb5da6eda895
+# Source0-md5:	a0e873d54994231d7c03640f7092a4fb
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}.sysconfig
@@ -168,6 +168,7 @@ if [ -f /var/lock/subsys/zope ]; then
 	fi
 else
 	echo "Create inituser using \"zpasswd inituser\" in directory \"/var/lib/zope/main\"" >&2
+	echo "look at /etc/zope/instances/main" >&2
 	echo "Run then \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
 fi
 
