@@ -1,6 +1,8 @@
 %include        /usr/lib/rpm/macros.python
 
 # TODO:
+# - check why initgroups() crashes on AMD64 and something, better than
+#   disabling initgroups() completely, with that
 # - no/more secure initial user/password settings (currently: zope/zope)
 # - ZEO support (mkzeoinstance is not tested and probably doesn't work)
 # - perl support?
@@ -12,7 +14,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.0
 # %%define		sub_ver rc2
-Release:	4
+Release:	5
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}.tgz
@@ -28,6 +30,7 @@ Source8:	%{name}-installzopeproduct
 Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
+Patch3:		%{name}-no_initgroups.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.3.3
 BuildRequires:	perl-base
@@ -87,6 +90,9 @@ eles ao invés desse RPM.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%ifarch amd64 alpha
+%patch3 -p1
+%endif
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
