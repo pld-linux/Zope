@@ -18,12 +18,12 @@ elif [ "$1" = "-d" ] ; then
 	if [ -z "$1" ] ; then
 		usage $0
 	fi
-	for INSTANCE_NAME in $INSTANCES ; do
+	for INSTANCE_NAME in $AUTO_INSTALL_PRODUCTS ; do
 		INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
 		rm -f "$INSTANCE_HOME/Products/$1"
 	done
 else
-	for INSTANCE_NAME in $INSTANCES ; do
+	for INSTANCE_NAME in $AUTO_INSTALL_PRODUCTS ; do
 		INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
 		ln -sf "$1" "$INSTANCE_HOME/Products/$2"
 	done
