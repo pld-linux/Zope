@@ -115,7 +115,7 @@ install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/zope
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/zope
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/zope-start
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances/main
 
 cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
 cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
