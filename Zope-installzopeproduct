@@ -9,7 +9,7 @@ usage() {
 }
 
 AUTO_INSTALL_PRODUCTS="main"
-[ -f /etc/sysconfig/zope ] && . /etc/sysconfig
+[ -f /etc/sysconfig/zope ] && . /etc/sysconfig/zope
 
 if [ -z "$1" ] ; then
 	usage $0
