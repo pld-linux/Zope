@@ -28,7 +28,7 @@ Source11:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source11-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 Patch0:		%{name}-http-virtual-cache.patch
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 2.2.2
+BuildRequires:	python-devel < 2.3
 BuildRequires:	perl
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
@@ -39,9 +39,9 @@ Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
-Requires:	python >= 2.2.2
-Requires:	python-modules >= 2.2.2
-Requires:	python-libs >= 2.2.2
+Requires:	python >= 2.2.3
+Requires:	python-modules >= 2.2.3
+Requires:	python-libs >= 2.2.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		python_prefix		%(echo `python -c "import sys; print sys.prefix"`)
