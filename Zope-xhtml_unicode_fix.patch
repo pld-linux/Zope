@@ -1,0 +1,12 @@
+diff -urN Zope-2.7.2-0/lib/python/ZPublisher/HTTPResponse.py Zope-2.7.2-0_chng/lib/python/ZPublisher/HTTPResponse.py
+--- Zope-2.7.2-0/lib/python/ZPublisher/HTTPResponse.py	2004-04-26 12:11:23.000000000 +0200
++++ Zope-2.7.2-0_chng/lib/python/ZPublisher/HTTPResponse.py	2004-09-27 21:08:10.564203240 +0200
+@@ -422,7 +422,7 @@
+         return self.use_HTTP_content_compression
+ 
+     def _encode_unicode(self,body,
+-                        charset_re=re.compile(r'text/[0-9a-z]+\s*;\s*' +
++                        charset_re=re.compile(r'(?:application|text)/[0-9a-z+-]+\s*;\s*' + 
+                                               r'charset=([-_0-9a-z]+' +
+                                               r')(?:(?:\s*;)|\Z)',
+                                               re.IGNORECASE)):
