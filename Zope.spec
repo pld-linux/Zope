@@ -1,0 +1,121 @@
+Summary:	An application server and portal toolkit for building Web sites.
+Name:		Zope
+Version:	2.4.1
+Release:	1
+Group:		Networking/Daemons
+Group(de):	Netzwerkwesen/Server
+Group(pl):	Sieciowe/Serwery
+License:	Zope Public License (ZPL)
+Source0:	http://www.zope.org/Download/Releases/%{name}-%{version}/%{name}-%{version}-src.tgz
+Source1:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
+Source2:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
+Source3:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
+Source4:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
+Source5:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
+Source6:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
+URL:		http://www.zope.org/
+Source7:	%{name}.init
+Source8:	%{name}-zserver.sh
+Prereq:		/sbin/chkconfig 
+Prereq:		/usr/sbin/useradd
+Requires:	python >= 2.1
+BuildRequires:	python-devel >= 2.1
+BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define python_prefix      %(echo `python -c "import sys; print sys.prefix"`)
+%define python_version     %(echo `python -c "import sys; print sys.version[:3]"`)
+%define python_libdir      %{python_prefix}/lib/python%{python_version}
+%define python_includedir  %{python_prefix}/include/python%{python_version}
+%define python_sitedir     %{python_libdir}/site-packages
+%define python_configdir   %{python_libdir}/config
+
+%define python_compile     python -c "import compileall; compileall.compile_dir('.')"
+%define python_compile_opt python -O -c "import compileall; compileall.compile_dir('.')"
+
+%description
+The Z Object Programming Environment (Zope) is a free, Open Source
+Python-based application server for building high-performance, dynamic
+web sites, using a powerful and simple scripting object model and
+high-performance, integrated object database.
+
+%prep
+%setup -q -n %{name}-%{version}-src
+%setup -q -T -D -c -a 1 -n %{name}-%{version}-src/ZopeContentManagersGuide
+%setup -q -T -D -c -a 2 -n %{name}-%{version}-src/GuideToDTML
+%setup -q -T -D -c -a 3 -n %{name}-%{version}-src/GuideToZSQL
+%setup -q -T -D    -a 4 -n %{name}-%{version}-src
+%setup -q -T -D -c -a 5 -n %{name}-%{version}-src/ZopeDevelopersGuide
+%setup -q -T -D -c -a 6 -n %{name}-%{version}-src/ZopeAdminGuide
+%setup -q -T -D -n %{name}-%{version}-src
+
+%build
+perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
+python wo_pcgi.py
+
+find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm \{\} \;
+find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm \{\} \;
+rm ZServer/medusa/monitor_client_win32.py
+
+%install
+rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope} \
+	    $RPM_BUILD_ROOT{/etc/rc.d/init.d,/var/log,/var/lib/zope}
+
+cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
+cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
+find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
+
+install zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
+install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
+install %{SOURCE8} $RPM_BUILD_ROOT%{_sbindir}/zope-zserver
+install %{SOURCE7} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
+install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/Data.fs
+
+touch $RPM_BUILD_ROOT/var/log/zope
+
+python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD_ROOT/var/lib/zope/access
+gzip -9nf doc/*.txt *.txt
+
+%pre
+  if [ -z "`getgid zope`" ]; then
+	groupadd -r -f zope
+  fi
+
+  if [ -z "`id -u zope 2>/dev/null`" ]; then
+	useradd -r -d /var/lib/zope -s /bin/false -c "Zope User" -g zope zope
+  fi
+
+%post
+/sbin/chkconfig --add zope
+if [ -f /var/lock/subsys/zope ]; then
+	/etc/rc.d/init.d/zope restart >&2
+else
+	echo "Run \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
+fi
+
+%postun
+if [ $1 = 0 ] ; then
+    userdel zope >/dev/null 2>&1 || :
+    groupdel zope >/dev/null 2>&1 || :	
+fi
+
+%preun
+if [ "$1" = "0" ]; then
+	if [ -f /var/lock/subsys/zope ]; then
+		/etc/rc.d/init.d/zope stop
+	fi
+	/sbin/chkconfig --del zope
+fi
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(644,root,root,755)
+%attr(755,root,root) /etc/rc.d/init.d/zope
+%attr(755,root,root) %{_bindir}/*
+%attr(755,root,root) %{_sbindir}/*
+%{_libdir}/zope
+%attr(771,root,zope) %dir /var/lib/zope
+%attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
+%doc *.gz doc/*.gz ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide
