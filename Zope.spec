@@ -3,12 +3,13 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.6.2
-Release:	1
+Version:	2.7.0
+%define		beta b2
+Release:	0.%{beta}.1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
-# Source0-md5:	a0e873d54994231d7c03640f7092a4fb
+Source0:	http://www.zope.org/Products/%{name}/%{version}%{beta}/%{version}%{beta}/%{name}-%{version}-%{beta}.tgz
+# Source0-md5:	a8f7f3ba81c4f50dc2d3b61e02f0fb45
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}.sysconfig
@@ -86,7 +87,7 @@ do Zope, outros sub-pacotes estão disponíveis, e você deveria instalar
 eles ao invés desse RPM.
 
 %prep
-%setup -q -n %{name}-%{version}-src -a6
+%setup -q -n %{name}-%{version}-%{beta} -a6
 %patch0 -p1
 mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide
 mkdir ZopeAdminGuide ZopeBook
@@ -99,11 +100,15 @@ tar xzf %{SOURCE11} -C ZopeBook
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
-python wo_pcgi.py
+./configure \
+	--prefix=/usr \
+	--optimize
 
-find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm -f \{\} \;
-find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm -f \{\} \;
-rm -f ZServer/medusa/monitor_client_win32.py
+%{__make}
+
+#find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm -f \{\} \;
+#find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm -f \{\} \;
+#rm -f ZServer/medusa/monitor_client_win32.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -117,14 +122,17 @@ install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/zope
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/zope-start
 install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances/main
 
-cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
-cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
-find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
-cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
+%{__make} install \
+	INSTALL_FLAGS="--root=$RPM_BUILD_ROOT --optimize=2"
 
-install zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
-install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
-install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/main/Data.fs
+#cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
+#cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
+#find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
+#cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
+
+#install zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
+#install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
+#install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/main/Data.fs
 
 python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost \
 	$RPM_BUILD_ROOT/var/lib/zope/main/access
