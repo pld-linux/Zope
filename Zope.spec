@@ -13,18 +13,19 @@ Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}.sysconfig
 Source4:	%{name}-start.sh
-Source5:	http://zope.org/Documentation/Guides/ZCMG/Tarred%20HTML%202.1.1/ZCMG.html.tgz
-# Source5-md5:	4c52eebc2e874a0590ac9c04e222e9f1
-Source6:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1/DTML.html.tgz
-# Source6-md5:	10f363dd061a1af8d472c51c32fa0a0e
-Source7:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
-# Source7-md5:	0cddb5688fc0f886db468da08251fb81
-Source8:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
-# Source8-md5:	0344ca88acb8a71688d2925975a55443
-Source9:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
-# Source9-md5:	b28bfc4ba4bee880767fcf89d79532d2
-Source10:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
-# Source10-md5:	268c38a4c7d9f7334cdc98b0a152f8da
+Source5:	%{name}.instance
+Source6:	http://zope.org/Documentation/Guides/ZCMG/Tarred%20HTML%202.1.1/ZCMG.html.tgz
+# Source6-md5:	4c52eebc2e874a0590ac9c04e222e9f1
+Source7:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1/DTML.html.tgz
+# Source7-md5:	10f363dd061a1af8d472c51c32fa0a0e
+Source8:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
+# Source8-md5:	0cddb5688fc0f886db468da08251fb81
+Source9:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
+# Source-md5:	0344ca88acb8a71688d2925975a55443
+Source10:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
+# Source10-md5:	b28bfc4ba4bee880767fcf89d79532d2
+Source11:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
+# Source11-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 Patch0:		%{name}-http-virtual-cache.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.3
@@ -85,16 +86,16 @@ do Zope, outros sub-pacotes estão disponíveis, e você deveria instalar
 eles ao invés desse RPM.
 
 %prep
-%setup -q -n %{name}-%{version}-src -a5
+%setup -q -n %{name}-%{version}-src -a6
 %patch0 -p1
 mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide 
 mkdir ZopeAdminGuide ZopeBook
-tar xzf %{SOURCE5} -C ZopeContentManagersGuide
-tar xzf %{SOURCE6} -C GuideToDTML
-tar xzf %{SOURCE7} -C GuideToZSQL
-tar xzf %{SOURCE8} -C ZopeDevelopersGuide
-tar xzf %{SOURCE9} -C ZopeAdminGuide
-tar xzf %{SOURCE10} -C ZopeBook
+tar xzf %{SOURCE6} -C ZopeContentManagersGuide
+tar xzf %{SOURCE7} -C GuideToDTML
+tar xzf %{SOURCE8} -C GuideToZSQL
+tar xzf %{SOURCE9} -C ZopeDevelopersGuide
+tar xzf %{SOURCE10} -C ZopeAdminGuide
+tar xzf %{SOURCE11} -C ZopeBook
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
@@ -107,13 +108,14 @@ rm -f ZServer/medusa/monitor_client_win32.py
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope} \
-	$RPM_BUILD_ROOT{/etc/{rc.d/init.d,logrotate.d,sysconfig}} \
+	$RPM_BUILD_ROOT{/etc/{rc.d/init.d,zope/instances,logrotate.d,sysconfig}} \
 	$RPM_BUILD_ROOT{/var/log/zope,/var/lib/zope/main}
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/zope
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/zope
 install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/zope-start
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances
 
 cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
 cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
@@ -178,7 +180,10 @@ fi
 %attr(640,root,root) %dir /var/lib/zope
 %attr(1771,root,zope) %dir /var/lib/zope/main
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/*
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
+%attr(640,root,root) /etc/zope
+%attr(640,root,root) /etc/zope/instances
 %ghost /var/log/zope/main.log
 %ghost /var/log/zope/main-detailed.log
