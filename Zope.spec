@@ -12,7 +12,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.0
 %define		sub_ver b4
-Release:	3.%{sub_ver}.1
+Release:	3.%{sub_ver}.2
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
@@ -92,13 +92,13 @@ eles ao invés desse RPM.
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 
 ./configure \
-	--prefix=%{zope_dir}
+	--prefix=%{zope_dir} \
+	--optimize
 #	--with-python=/usr/bin/python
 
 %{__make}
 
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
-# python wo_pcgi.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
