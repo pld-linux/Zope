@@ -7,7 +7,7 @@ Version:	2.6.1
 Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
+Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
 # Source0-md5:	a17f36b86b6e489797d8e52f1ba48efe
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
