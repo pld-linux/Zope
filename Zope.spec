@@ -7,8 +7,6 @@ Version:	2.4.3
 Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Group(de):	Netzwerkwesen/Server
-Group(pl):	Sieciowe/Serwery
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
 Source1:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
 Source2:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
