@@ -1,5 +1,6 @@
 Summary:	An application server and portal toolkit for building Web sites
 Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la construcción de sitios Web
+Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.4.1
@@ -8,16 +9,18 @@ License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
-Source0:	http://www.zope.org/Download/Releases/%{name}-%{version}/%{name}-%{version}-src.tgz
+Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
 Source1:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
 Source2:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
 Source3:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
 Source4:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
 Source5:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
 Source6:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
-URL:		http://www.zope.org/
+# note: above documentation is deprecated, zope.org suggests using ZopeBook:
+#Source1:	http://www.zope.org/Members/michel/ZB/ZopeBook.tgz
 Source7:	%{name}.init
 Source8:	%{name}-zserver.sh
+URL:		http://www.zope.org/
 Prereq:		rc-scripts
 Prereq:		/sbin/chkconfig
 Prereq:		/usr/sbin/useradd
@@ -50,6 +53,13 @@ simple, Zope-pcgi, para uso con el servidor Apache. Si desea instalar
 solamente algunas partes de la aplicación Zope, están diponibles otros
 subpaquetes, usted debe instalar éstos en vez de ese RPM.
 
+%description -l pl
+Zope (Z Object Programming Environment - Obiektowe ¦rodowisko
+Programistyczne Z) jest opartym o Pythona serwerem aplikacji do
+tworzenia wysoko wydajnych, dynamicznych serwisów WWW, przy u¿yciu
+u¿ytecznego i prostego modelu obiektowego skryptów oraz wysoko
+wydajnej zintegrowanej obiektowej bazy danych.
+
 %description -l pt_BR
 Zope é uma aplicação baseada em Python, Open Source[tm], para
 construção de sites dinâmicos, usando um modelo de scripting poderoso
@@ -59,16 +69,14 @@ para uso com o Apache. Se você quiser instalar apenas algumas partes
 do Zope, outros sub-pacotes estão disponíveis, e você deveria instalar
 eles ao invés desse RPM.
 
-
 %prep
-%setup -q -n %{name}-%{version}-src
-%setup -q -T -D -c -a 1 -n %{name}-%{version}-src/ZopeContentManagersGuide
-%setup -q -T -D -c -a 2 -n %{name}-%{version}-src/GuideToDTML
-%setup -q -T -D -c -a 3 -n %{name}-%{version}-src/GuideToZSQL
-%setup -q -T -D    -a 4 -n %{name}-%{version}-src
-%setup -q -T -D -c -a 5 -n %{name}-%{version}-src/ZopeDevelopersGuide
-%setup -q -T -D -c -a 6 -n %{name}-%{version}-src/ZopeAdminGuide
-%setup -q -T -D -n %{name}-%{version}-src
+%setup -q -n %{name}-%{version}-src -a4
+mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide
+tar xzf %{SOURCE1} -C ZopeContentManagersGuide
+tar xzf %{SOURCE2} -C GuideToDTML
+tar xzf %{SOURCE3} -C GuideToZSQL
+tar xzf %{SOURCE5} -C ZopeDevelopersGuide
+tar xzf %{SOURCE6} -C ZopeAdminGuide
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
@@ -121,20 +129,20 @@ else
 	echo "Run \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
 fi
 
-%postun
-if [ "$1" = "0" ] ; then
-	echo "Removing user zope"
-	/usr/sbin/userdel zope >/dev/null 2>&1 || :
-	echo "Removing group zope"
-	/usr/sbin/groupdel zope >/dev/null 2>&1 || :	
-fi
-
 %preun
 if [ "$1" = "0" ]; then
 	if [ -f /var/lock/subsys/zope ]; then
 		/etc/rc.d/init.d/zope stop
 	fi
 	/sbin/chkconfig --del zope
+fi
+
+%postun
+if [ "$1" = "0" ] ; then
+	echo "Removing user zope"
+	/usr/sbin/userdel zope >/dev/null 2>&1 || :
+	echo "Removing group zope"
+	/usr/sbin/groupdel zope >/dev/null 2>&1 || :	
 fi
 
 %files
