@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# zope          Start/Stop the Zope web-application server.
+# zope		Start/Stop the Zope web-application server.
 #
 # chkconfig: 2345 72 72
-# description: zope is a web server specifically for handling \
-#              HTTP requests to the Zope web-application service.
+# description:	zope is a web server specifically for handling \
+# 		HTTP requests to the Zope web-application service.
 # probe: true
 
 # Source function library.
@@ -16,9 +16,9 @@ RETVAL=0
 
 # See how we were called.
 case "$1" in
-    start)
+  start)
 	if [ -f /var/lock/subsys/zope ]; then
-		msg_Already_Running Zope
+		msg_already_running Zope
 	else 	
 		msg_starting Zope
 		busy
@@ -29,34 +29,33 @@ case "$1" in
 	fi
 	;;
   stop)
-        if [ -f /var/lock/subsys/zope ]; then
-                msg_stopping Zope
-                kill `cat ${CLIENT_HOME}/Z2.pid`
+	if [ -f /var/lock/subsys/zope ]; then
+		msg_stopping Zope
+		kill `cat ${CLIENT_HOME}/Z2.pid`
 		sleep 1
 		deltext
 		ok
-                rm -f /var/lock/subsys/zope >/dev/null 2>&1
-        else
-                msg_not_running Zope
-                exit 1
-        fi
+		rm -f /var/lock/subsys/zope >/dev/null 2>&1
+	else
+		msg_not_running Zope
+		exit 1
+	fi
 	;;
   status)
 	if ps -p `cat ${CLIENT_HOME}/Z2.pid | awk '{print $2}'` >/dev/null; then
-	    RETVAL=$?
-	    echo "Zope (pid `cat ${CLIENT_HOME}/Z2.pid`) is running"
+		RETVAL=$?
+		nls "Zope (pid %s) is running" "`cat ${CLIENT_HOME}/Z2.pid`"
 	else     
-	    msg_not_running Zope
-	    RETVAL=1
+		msg_not_running Zope
+		RETVAL=1
 	fi
-    
 	;;
-  restart)
+  restart|reload)
 	$0 stop
 	$0 start
 	;;
   *)
-	msg_Usage "$0 {start|stop|status|restart}"
+	msg_Usage "$0 {start|stop||restart|reload|status}"
 	exit 1
 	;;
 esac
