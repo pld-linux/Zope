@@ -21,7 +21,7 @@ Source7:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1
 Source8:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
 # Source8-md5:	0cddb5688fc0f886db468da08251fb81
 Source9:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
-# Source-md5:	0344ca88acb8a71688d2925975a55443
+# Source9-md5:	0344ca88acb8a71688d2925975a55443
 Source10:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
 # Source10-md5:	b28bfc4ba4bee880767fcf89d79532d2
 Source11:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
