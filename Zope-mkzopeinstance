@@ -16,7 +16,7 @@ else
 fi
 
 umask 002
-python /usr/lib/zope/mkzopeinstance.py \
+python /usr/lib/zope/bin/mkzopeinstance.py \
 	-s /etc/zope/skel \
 	-d "$destdir" \
 	$namepass || exit $?
@@ -28,7 +28,7 @@ chmod a+x "${destdir}"/bin/*
 
 install -d "/var/log/zope/$name"
 
-chown root.zope "${destdir}" "/var/log/zope/$name"
+chown zope.zope "${destdir}" "/var/log/zope/$name"
 chmod 770 "${destdir}" "/var/log/zope/$name"
 chown -R zope.zope "${destdir}"/*
 chmod a+X  "${destdir}"/*
