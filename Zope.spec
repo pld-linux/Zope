@@ -105,8 +105,6 @@ touch $RPM_BUILD_ROOT/var/log/zope
 
 python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD_ROOT/var/lib/zope/access
 
-gzip -9nf doc/*.txt *.txt
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -153,4 +151,4 @@ fi
 %{_libdir}/zope
 %attr(1771,root,zope) %dir /var/lib/zope
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
-%doc *.gz doc/*.gz ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide
+%doc *.txt doc/*.txt ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide
