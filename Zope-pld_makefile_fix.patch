@@ -1,0 +1,11 @@
+diff -urN Zope-2.7.org/inst/Makefile.in Zope-2.7.new/inst/Makefile.in
+--- Zope-2.7.org/inst/Makefile.in	2004-01-09 00:33:43.000000000 +0100
++++ Zope-2.7.new/inst/Makefile.in	2004-01-10 13:01:39.000000000 +0100
+@@ -58,7 +58,6 @@
+ install: build
+ 	${PYTHON} "${BASE_DIR}/setup.py" ${DISTUTILS_OPTS} install \
+ 	   --home="${PREFIX}" ${BUILD_FLAGS} ${INSTALL_FLAGS}
+-	[ -f ${PREFIX}/bin/python ] || ${LN} ${PYTHON} ${PREFIX}/bin/python
+ 	@echo
+ 	@echo Zope binaries installed successfully.
+ 	@echo Now run \'${PREFIX}/bin/mkzopeinstance.py\'
