@@ -88,7 +88,7 @@ eles ao invés desse RPM.
 %prep
 %setup -q -n %{name}-%{version}-src -a6
 %patch0 -p1
-mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide 
+mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide
 mkdir ZopeAdminGuide ZopeBook
 tar xzf %{SOURCE6} -C ZopeContentManagersGuide
 tar xzf %{SOURCE7} -C GuideToDTML
@@ -184,7 +184,7 @@ if [ "$1" = "0" ] ; then
        echo "Removing user zope"
        /usr/sbin/userdel zope >/dev/null 2>&1 || :
        echo "Removing group zope"
-       /usr/sbin/groupdel zope >/dev/null 2>&1 || :   
+       /usr/sbin/groupdel zope >/dev/null 2>&1 || :
 fi
 
 %files
