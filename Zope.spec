@@ -147,12 +147,14 @@ fi
 
 %post
 /sbin/chkconfig --add zope
+was_stopped=0
 if [ -f /var/lib/zope/Data.fs ]; then
 	echo "Found the database in old location. Migrating..."
 	if [ -f /var/lock/subsys/zope ]; then
 	    /etc/rc.d/init.d/zope stop >&2
 	    was_stopped=1
 	fi
+	umask 022
 	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -f * ./main 2>/dev/null
 	touch /var/lib/zope/access
 	if [ "x$was_stopped" = "x1" ]; then
