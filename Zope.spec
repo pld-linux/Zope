@@ -4,32 +4,15 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.7.0
-%define		beta b2
-Release:	0.%{beta}.1
+%define		sub_ver b2
+Release:	1.%{sub_ver}
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Source0:	http://www.zope.org/Products/%{name}/%{version}%{beta}/%{version}%{beta}/%{name}-%{version}-%{beta}.tgz
+Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
 # Source0-md5:	a8f7f3ba81c4f50dc2d3b61e02f0fb45
-Source1:	%{name}.init
-Source2:	%{name}.logrotate
-Source3:	%{name}.sysconfig
-Source4:	%{name}-start.sh
-Source5:	%{name}.instance
-Source6:	http://zope.org/Documentation/Guides/ZCMG/Tarred%20HTML%202.1.1/ZCMG.html.tgz
-# Source6-md5:	4c52eebc2e874a0590ac9c04e222e9f1
-Source7:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1/DTML.html.tgz
-# Source7-md5:	10f363dd061a1af8d472c51c32fa0a0e
-Source8:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
-# Source8-md5:	0cddb5688fc0f886db468da08251fb81
-Source9:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
-# Source9-md5:	0344ca88acb8a71688d2925975a55443
-Source10:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
-# Source10-md5:	b28bfc4ba4bee880767fcf89d79532d2
-Source11:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
-# Source11-md5:	268c38a4c7d9f7334cdc98b0a152f8da
-Patch0:		%{name}-http-virtual-cache.patch
+Source1:	%{name}27-skel.tar.gz
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 2.2.2
+BuildRequires:	python-devel >= 2.2.3
 BuildRequires:	perl
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
@@ -40,9 +23,9 @@ Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
-Requires:	python >= 2.2.2
-Requires:	python-modules >= 2.2.2
-Requires:	python-libs >= 2.2.2
+Requires:	python >= 2.2.3
+Requires:	python-modules >= 2.2.3
+Requires:	python-libs >= 2.2.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		python_prefix		%(echo `python -c "import sys; print sys.prefix"`)
@@ -87,28 +70,25 @@ do Zope, outros sub-pacotes estão disponíveis, e você deveria instalar
 eles ao invés desse RPM.
 
 %prep
-%setup -q -n %{name}-%{version}-%{beta} -a6
-%patch0 -p1
-mkdir ZopeContentManagersGuide GuideToDTML GuideToZSQL ZopeDevelopersGuide
-mkdir ZopeAdminGuide ZopeBook
-tar xzf %{SOURCE6} -C ZopeContentManagersGuide
-tar xzf %{SOURCE7} -C GuideToDTML
-tar xzf %{SOURCE8} -C GuideToZSQL
-tar xzf %{SOURCE9} -C ZopeDevelopersGuide
-tar xzf %{SOURCE10} -C ZopeAdminGuide
-tar xzf %{SOURCE11} -C ZopeBook
+
+%setup -q -n %{name}-%{version}-%{sub_ver}
+tar xzf %{SOURCE1}
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
+
 ./configure \
 	--prefix=/usr \
 	--optimize
 
 %{__make}
 
-#find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm -f \{\} \;
-#find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm -f \{\} \;
-#rm -f ZServer/medusa/monitor_client_win32.py
+find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm -f \{\} \;
+find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm -f \{\} \;
+rm -f ZServer/medusa/monitor_client_win32.py
+
+perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
+# python wo_pcgi.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -116,21 +96,15 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope}
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,zope/instances,logrotate.d,sysconfig}
 install -d $RPM_BUILD_ROOT{/var/log/zope,/var/lib/zope/main}
 
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
-install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/zope
-install %{SOURCE3} $RPM_BUILD_ROOT/etc/sysconfig/zope
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/zope-start
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances/main
+cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
+cp -a utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
+cp -a %{name}-skel/* $RPM_BUILD_ROOT/
+rm -rf %{name}-skel
 
-%{__make} install \
-	INSTALL_FLAGS="--root=$RPM_BUILD_ROOT --optimize=2"
+# find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
+# cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
 
-#cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
-#cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
-#find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
-#cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
-
-#install zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
+install utilities/zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
 #install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
 #install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/main/Data.fs
 
@@ -198,17 +172,17 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide ZopeBook
 %attr(754,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
-%attr(755,root,root) %{_sbindir}/*
+# %%attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
 %attr(640,root,root) %dir /var/lib/zope
-%attr(1771,root,zope) %dir /var/lib/zope/main
+%attr(1771,root,zope) %dir /var/lib/zope/main/*
 %attr(640,root,root) %dir /etc/zope
 %attr(640,root,root) %dir /etc/zope/instances
-%attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main/*
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/*
+%attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/zope.conf
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
 %ghost /var/log/zope/main.log
