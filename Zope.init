@@ -30,110 +30,98 @@ fi
 . /etc/sysconfig/zope
 
 
-# functions
-
-unset_vars()
-{
-    unset INSTANCE_NAME INSTANCE_HOME INST_HOME CGIBIN_BASE LOG_FILE
-    unset ZOPE_BASE ZOPE_USER NUMBER_OF_THREADS ZOPE_HOME
-    unset IP_ADDRESS HTTP_PORT FTP_PORT WEBDAV_PORT WATCHDOG
-    unset IPC_PORT LOC DEBUG_MODE DETAILED_LOG_FILE
-
-    # by default disable any access
-    HTTP_PORT="-"
-    ICP_PORT="-"
-    FTP_PORT="-"
-    WEBDAV_PORT="-"
-}
-
-start_instance()
-{
-    msg_starting "$z_name"
-
-    INST_HOME="$INSTANCE_HOME"
-    ZOPE_HOME="$INSTANCE_HOME"
-
-    export INSTANCE_NAME INSTANCE_HOME INST_HOME CGIBIN_BASE LOG_FILE
-    export ZOPE_BASE ZOPE_USER NUMBER_OF_THREADS ZOPE_HOME
-    export IP_ADDRESS HTTP_PORT FTP_PORT WEBDAV_PORT WATCHDOG
-    export IPC_PORT LOC DEBUG_MODE DETAILED_LOG_FILE
-
-    daemon zope-start
-    RETVAL=$?
-    [ $RETVAL -eq 0 ] && touch /var/lock/subsys/zope
-    sleep 5
-}
-
 start_instances()
 {
-    for i in /etc/zope/instances/*
+    RETVAL=1
+    for i in /etc/zope/*
     do
-	unset_vars
+    	if [ ! -d $i -o ! -f $i/zope.conf ]; then
+		continue
+	fi
+	
 	INSTANCE_NAME=`basename $i`
-	echo "$INSTANCE_NAME" | egrep -q "rpmsave|rpmorig" && continue
-	. $i
-	PIDFILE=$INSTANCE_HOME/var/Z2.pid
 	if [ "x$INSTANCE_NAME" = "xmain" ]; then
 	    z_name="Zope"
 	else
 	    z_name="Zope ($INSTANCE_NAME)"
 	fi
-	if [ -f $PIDFILE ]; then
-	    if ps -p `cat $PIDFILE` >/dev/null; then
-		    RETVAL=$?
-		    msg_already_running "$z_name"
-		    continue
-	    else
-		rm -f $PIDFILE
-	    fi
+
+	if [ -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
+		msg_already_running "$z_name"
+		continue	
 	fi
-	start_instance
+
+	if is_yes "$RESPAWN" ; then
+		respawn="--respawn"
+	else
+		respawn=""
+	fi
+	
+	msg_starting "$z_name"
+	busy
+	/usr/sbin/daemon --name="$INSTANCE_NAME" \
+		-P /var/run/zope \
+		$respawn \
+		--output="/var/log/zope/$INSTANCE_NAME.log" \
+		/usr/sbin/runzope "$INSTANCE_NAME"
+	RET=$?
+	if [ $RET -eq 0 ]; then
+		ok
+		touch /var/lock/subsys/"zope-$INSTANCE_NAME"
+		RETVAL=0
+	else
+		fail
+	fi
     done
+    return $RETVAL
 }
 
 stop_instances()
 {
-    for i in /etc/zope/instances/*
+    RETVAL=1
+    for i in /etc/zope/*
     do
-	unset_vars
-	. $i
-	PIDFILE=$INSTANCE_HOME/var/Z2.pid
+    	if [ ! -d $i -o ! -f $i/zope.conf ]; then
+		continue
+	fi
 	INSTANCE_NAME=`basename $i`
 	if [ "x$INSTANCE_NAME" = "xmain" ]; then
 	    z_name="Zope"
 	else
 	    z_name="Zope ($INSTANCE_NAME)"
 	fi
-	
-	if [ -f $PIDFILE ]; then
-	    msg_stopping "$z_name"
-	    busy
-	    kill `cat $PIDFILE` 2>/dev/null
-	    RET=$?
-	    sleep 1
-	    if [ $RET -eq 0 ]; then
-		ok
-	    else
-		sleep 5
-		kill -9 `cat $PIDFILE` 2>/dev/null
-		RET=$?
-		[ $RET -eq 0 ] && ok || died
-	    fi
-	    rm -f $PIDFILE
-	else
-	    msg_not_running "$z_name"
+
+	if [ ! -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
+		msg_not_running "$z_name"
+		continue	
 	fi
+	msg_stoping "$z_name"
+	busy
+	/usr/sbin/daemon --name="$INSTANCE_NAME" \
+		-P /var/run/zope \
+		--stop 2>/dev/null
+	RET=$?
+	if [ $RET -eq 0 ]; then
+		ok
+		RETVAL=0
+	else
+		fail
+	fi
+	rm -f /var/lock/subsys/"zope-$INSTANCE_NAME"
     done
+    return $RETVAL
 }
 
 stat_instances()
 {
-    for i in /etc/zope/instances/*
+    for i in /etc/zope/*
     do
-	unset_vars
-	. $i
-	PIDFILE=$INSTANCE_HOME/var/Z2.pid
+    	if [ ! -d $i -o ! -f $i/zope.conf ]; then
+		continue
+	fi
 	INSTANCE_NAME=`basename $i`
+    	INSTANCE_HOME=/var/lib/zope/$INSTANCE_NAME
+	PIDFILE=$INSTANCE_HOME/var/Z2.pid
 	if [ "x$INSTANCE_NAME" = "xmain" ]; then
 	    z_name="Zope"
 	else
@@ -157,10 +145,10 @@ stat_instances()
 # See how we were called.
 case "$1" in
   start)
-		start_instances
+		start_instances && touch /var/lock/subsys/zope
 	;;
   stop)
-		stop_instances
+		stop_instances && rm -f /var/lock/subsys/zope
 	;;
   status)
 		stat_instances
