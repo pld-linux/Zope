@@ -107,9 +107,9 @@ rm -f ZServer/medusa/monitor_client_win32.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope} \
-	$RPM_BUILD_ROOT{/etc/{rc.d/init.d,zope/instances,logrotate.d,sysconfig}} \
-	$RPM_BUILD_ROOT{/var/log/zope,/var/lib/zope/main}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope}
+install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,zope/instances,logrotate.d,sysconfig}
+install -d $RPM_BUILD_ROOT{/var/log/zope,/var/lib/zope/main}
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/logrotate.d/zope
