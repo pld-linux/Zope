@@ -12,7 +12,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.0
 %define		sub_ver b2
-Release:	1.%{sub_ver}.1
+Release:	3.%{sub_ver}.1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
@@ -30,7 +30,7 @@ Patch1:		%{name}-default_config.patch
 Patch2:		%{name}-instance_paths.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.3
-BuildRequires:	perl
+BuildRequires:	perl-base
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
