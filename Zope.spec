@@ -31,12 +31,12 @@ URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.2
 BuildRequires:	perl
 PreReq:		rc-scripts
-Requires(pre): /usr/bin/getgid
-Requires(pre): /bin/id
-Requires(pre): /usr/sbin/groupadd
-Requires(pre): /usr/sbin/useradd
-Requires(postun):      /usr/sbin/userdel
-Requires(postun):      /usr/sbin/groupdel
+Requires(pre):	/usr/bin/getgid
+Requires(pre):	/bin/id
+Requires(pre):	/usr/sbin/groupadd
+Requires(pre):	/usr/sbin/useradd
+Requires(postun):	/usr/sbin/userdel
+Requires(postun):	/usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
 Requires:	python >= 2.2.2
@@ -182,7 +182,7 @@ if [ "$1" = "0" ] ; then
        echo "Removing user zope"
        /usr/sbin/userdel zope >/dev/null 2>&1 || :
        echo "Removing group zope"
-       /usr/sbin/groupdel zope >/dev/null 2>&1 || :    
+       /usr/sbin/groupdel zope >/dev/null 2>&1 || :   
 fi
 
 %files
