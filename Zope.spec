@@ -3,12 +3,12 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.6.2
-Release:	2
+Version:	2.6.3
+Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
-# Source0-md5:	a0e873d54994231d7c03640f7092a4fb
+# Source0-md5:	904cf97757401fd353275d0807685460
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}.sysconfig
@@ -30,7 +30,7 @@ Source13:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source13-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.1
-BuildRequires:	perl
+BuildRequires:	perl-base
 PreReq:		rc-scripts
 Requires(pre): /usr/bin/getgid
 Requires(pre): /bin/id
