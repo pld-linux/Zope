@@ -14,7 +14,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.1
 # %%define		sub_ver b2
-Release:	1
+Release:	3
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}.tgz
@@ -48,6 +48,7 @@ Requires:	python-modules >= 2.3.3
 Requires:	python-libs >= 2.3.3
 Requires:	expat >= 1.95.7
 Requires:	python-PyXML >= 0.8.3
+Requires:	Zope-Hotfix
 %pyrequires_eq  python
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
