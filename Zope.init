@@ -93,7 +93,7 @@ stat_instances()
 	INSTANCE_NAME=`basename $i`
     	INSTANCE_HOME=/var/lib/zope/$INSTANCE_NAME
 	PIDFILE=$INSTANCE_HOME/var/Z2.pid
-	$INSTANCE_HOME/bin/zopectl stop
+	$INSTANCE_HOME/bin/zopectl status
     done
 }
 
