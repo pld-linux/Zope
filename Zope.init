@@ -119,7 +119,7 @@ case "$1" in
         fi
 	;;
   status)
-	status zope zope-zserver
+	status zope python
 	;;
   restart|force-reload)
 	$0 stop
