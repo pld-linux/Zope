@@ -15,9 +15,12 @@ Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{s
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
-Source4:	%{name}-start.sh
-Source5:	%{name}.instance
+Source4:	%{name}-mkzopeinstance
+Source5:	%{name}-mkzeoinstance
+Source6:	%{name}-runzope
+Source7:	%{name}-zopectl
 Patch0:		%{name}-python-2.3.2.patch
+Patch1:		%{name}-default_config.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.3
 BuildRequires:	perl
@@ -71,6 +74,7 @@ eles ao invés desse RPM.
 
 %setup -q -n %{name}-%{version}-%{sub_ver}
 %patch0 -p1
+%patch1 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
@@ -87,34 +91,29 @@ perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope,%{_examplesdir}} \
+install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope} \
 	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/instances,%{_sbindir}}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}}
 
 %{__make} install INSTALL_FLAGS="--optimize=1 --root $RPM_BUILD_ROOT"
 
 mv $RPM_BUILD_ROOT%{_libdir}{/python,/zope}
-mv $RPM_BUILD_ROOT%{_bindir}{/zpasswd.py,/zpasswd}
-mv $RPM_BUILD_ROOT{%{_prefix}/import,%{_examplesdir}/%{name}-%{version}}
-rm -f $RPM_BUILD_ROOT%{_bindir}/*.py
+mv $RPM_BUILD_ROOT%{_bindir}/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
+mv $RPM_BUILD_ROOT%{_bindir}/*.py $RPM_BUILD_ROOT%{_libdir}/zope
 rm -rf $RPM_BUILD_ROOT/usr/doc/
-rm -rf $RPM_BUILD_ROOT/usr/skel/
+mv $RPM_BUILD_ROOT/usr/skel $RPM_BUILD_ROOT%{_sysconfdir}/zope
+mv $RPM_BUILD_ROOT{%{_prefix}/import/*,%{_sysconfdir}/zope/skel/import}
+rm -rf $RPM_BUILD_ROOT/etc/zope/skel/bin
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/zope
 install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/zope
-install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/zope-start
-install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances/main
-
-#install utilities/zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
-#install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
-#install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/main/Data.fs
-
-python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost \
-	$RPM_BUILD_ROOT/var/lib/zope/main/access
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/mkzopeinstance
+install %{SOURCE5} $RPM_BUILD_ROOT%{_sbindir}/mkzeoinstance
+install %{SOURCE6} $RPM_BUILD_ROOT%{_sbindir}/runzope
+install %{SOURCE7} $RPM_BUILD_ROOT%{_sbindir}/zopectl
 
 touch $RPM_BUILD_ROOT/var/log/zope/main.log
-touch $RPM_BUILD_ROOT/var/log/zope/main-detailed.log
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -131,29 +130,36 @@ fi
 
 %post
 /sbin/chkconfig --add zope
-was_stopped=0
-if [ -f /var/lib/zope/Data.fs ]; then
-	echo "Found the database in old location. Migrating..."
-	if [ -f /var/lock/subsys/zope ]; then
-	    /etc/rc.d/init.d/zope stop >&2
-	    was_stopped=1
-	fi
-	umask 022
-	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -f * ./main 2>/dev/null
-	touch /var/lib/zope/access
-	if [ "x$was_stopped" = "x1" ]; then
-	    /etc/rc.d/init.d/zope start >&2
-	fi
-	echo "Migration completed (new db location is /var/lib/zope/main)"
+if [ ! -f /etc/zope/main/zope.conf ] ; then
+	echo "Creating initial 'main' instance..."
+	/usr/sbin/mkzopeinstance main zope:zope
+	echo "Instance created. Listening on 127.0.0.1:8080, initial user: 'zope' with password: 'zope'"
 fi
+was_stopped=0
+for dir in /var/lib/zope/main /var/lib/zope ; do
+	if [ -f $dir/Data.fs ]; then
+		echo "Found the database in old location. Migrating..."
+		if [ -f /var/lock/subsys/zope ]; then
+		    /etc/rc.d/init.d/zope stop >&2
+		    was_stopped=1
+		fi
+		umask 022
+		[ -d /var/lib/zope/main ] && cd $dir && mv -f Data* /var/lib/zope/main/var 2>/dev/null
+		if [ "x$was_stopped" = "x1" ]; then
+		    /etc/rc.d/init.d/zope start >&2
+		fi
+		echo "Migration completed (new db location is /var/lib/zope/main/var)"
+		break
+	fi
+done
 if [ -f /var/lock/subsys/zope ]; then
 	if [ "x$was_stopped" != "x1" ]; then
 	    /etc/rc.d/init.d/zope restart >&2
 	fi
 else
-	echo "Create inituser using \"zpasswd inituser\" in directory \"/var/lib/zope/main\"" >&2
-	echo "look at /etc/zope/instances/main" >&2
+	echo "look at /etc/zope/main/zope.conf" >&2
 	echo "Run then \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
+	echo "you make create new Zope instances with mkzopeinstance" >&2
 fi
 
 %preun
@@ -179,14 +185,14 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
-%attr(640,root,root) %dir /var/lib/zope
+%attr(771,root,root) %dir /var/run/zope
+%attr(771,root,root) %dir /var/lib/zope
 %attr(1771,root,zope) %dir /var/lib/zope/main
+%attr(771,root,root) %dir /var/log/zope
 %attr(640,root,root) %dir /etc/zope
-%attr(640,root,root) %dir /etc/zope/instances
-%attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main/*
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/*
+%attr(640,root,root) %dir /etc/zope/skel
+%attr(640,root,root) %dir /etc/zope/main
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/skel/*
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
-%{_examplesdir}/*
 %ghost /var/log/zope/main.log
-%ghost /var/log/zope/main-detailed.log
