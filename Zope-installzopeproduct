@@ -25,6 +25,7 @@ elif [ "$1" = "-d" ] ; then
 else
 	for INSTANCE_NAME in $AUTO_INSTALL_PRODUCTS ; do
 		INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
+		[ -n "$2" -a -d "$INSTANCE_HOME/Products/$2" ] && continue
 		ln -sf "$1" "$INSTANCE_HOME/Products/$2"
 	done
 fi
