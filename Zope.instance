@@ -21,10 +21,11 @@ ZOPE_USER=zope
 # empty means to listen on all interfaces
 IP_ADDRESS=
 
-# ports to listen on (0 means disabled)
+# ports to listen on (unset or "-" means disabled)
 HTTP_PORT=80
 FTP_PORT=21
 IPC_PORT=80
+#WEBDAV_PORT=9800
 
 # number of the initial threads to run
 NUMBER_OF_THREADS=4

@@ -114,12 +114,13 @@ fi
 # call server
 
 exec python $ZOPE_BASE/z2.py \
--z $INSTANCE_HOME  \
--t $NUMBER_OF_THREADS \
--u $ZOPE_USER  \
--w $HTTP_PORT  \
--f $FTP_PORT   \
--l $LOG_FILE   \
+-z "$INSTANCE_HOME"  \
+-t "$NUMBER_OF_THREADS" \
+-u "$ZOPE_USER"  \
+-w "$HTTP_PORT"  \
+-f "$FTP_PORT"   \
+-W "$WEBDAV_PORT"   \
+-l "$LOG_FILE"   \
 $ipstr \
 $icpstr  \
 $manager \
