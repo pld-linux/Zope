@@ -25,7 +25,6 @@ Source9:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
 # Source9-md5:	b28bfc4ba4bee880767fcf89d79532d2
 Source10:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source10-md5:	268c38a4c7d9f7334cdc98b0a152f8da
-
 Patch0:		%{name}-http-virtual-cache.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.3
@@ -171,7 +170,7 @@ fi
 
 %files
 %defattr(644,root,root,755)
-%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide Zopebook
+%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL ZopeDevelopersGuide ZopeAdminGuide ZopeBook
 %attr(755,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
