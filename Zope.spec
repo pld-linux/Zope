@@ -21,6 +21,7 @@ Source9:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
 Source7:	%{name}.init
 Source8:	%{name}-zserver.sh
 URL:		http://www.zope.org/
+BuildRequires:	python-devel >= 2.2
 PreReq:		rc-scripts
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
@@ -31,7 +32,6 @@ Requires(postun):	/usr/sbin/userdel
 Requires(postun):	/usr/sbin/groupdel
 Requires:	python >= 2.2
 Requires:	python-modules >= 2.2
-BuildRequires:	python-devel >= 2.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define python_prefix      %(echo `python -c "import sys; print sys.prefix"`)
@@ -114,8 +114,6 @@ touch $RPM_BUILD_ROOT/var/log/zope
 
 python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD_ROOT/var/lib/zope/access
 
-gzip -9nf doc/*.txt *.txt
-
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -157,10 +155,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%doc doc/*.txt *.txt ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide ZopeBook
 %attr(755,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
 %attr(1771,root,zope) %dir /var/lib/zope
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
-%doc *.gz doc/*.gz ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide ZopeBook
