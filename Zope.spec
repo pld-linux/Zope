@@ -97,8 +97,8 @@ eles ao invés desse RPM.
 %patch2 -p1
 %ifarch amd64 alpha
 %patch3 -p1
-%patch4 -p1
 %endif
+%patch4 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
