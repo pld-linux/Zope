@@ -40,37 +40,18 @@ start_instances()
 	fi
 	
 	INSTANCE_NAME=`basename $i`
-	if [ "x$INSTANCE_NAME" = "xmain" ]; then
-	    z_name="Zope"
-	else
-	    z_name="Zope ($INSTANCE_NAME)"
-	fi
+	INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
 
 	if [ -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
-		msg_already_running "$z_name"
+		msg_already_running "Zope instance $INSTANCE_NAME"
 		continue	
 	fi
 
-	if is_yes "$RESPAWN" ; then
-		respawn="--respawn"
-	else
-		respawn=""
-	fi
-	
-	msg_starting "$z_name"
-	busy
-	/usr/sbin/daemon --name="$INSTANCE_NAME" \
-		-P /var/run/zope \
-		$respawn \
-		--output="/var/log/zope/$INSTANCE_NAME.log" \
-		/usr/sbin/runzope "$INSTANCE_NAME"
+	run_cmd "Starting Zope instance $INSTANCE_NAME" "$INSTANCE_HOME"/bin/zopectl start
 	RET=$?
 	if [ $RET -eq 0 ]; then
-		ok
 		touch /var/lock/subsys/"zope-$INSTANCE_NAME"
 		RETVAL=0
-	else
-		fail
 	fi
     done
     return $RETVAL
@@ -85,27 +66,17 @@ stop_instances()
 		continue
 	fi
 	INSTANCE_NAME=`basename $i`
-	if [ "x$INSTANCE_NAME" = "xmain" ]; then
-	    z_name="Zope"
-	else
-	    z_name="Zope ($INSTANCE_NAME)"
-	fi
+	INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
 
 	if [ ! -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
-		msg_not_running "$z_name"
+		msg_not_running "Zope instance $INSTANCE_NAME"
 		continue	
 	fi
-	msg_stoping "$z_name"
-	busy
-	/usr/sbin/daemon --name="$INSTANCE_NAME" \
-		-P /var/run/zope \
-		--stop 2>/dev/null
+	
+	run_cmd "Stopping Zope instance $INSTANCE_NAME" "$INSTANCE_HOME"/bin/zopectl stop
 	RET=$?
 	if [ $RET -eq 0 ]; then
-		ok
 		RETVAL=0
-	else
-		fail
 	fi
 	rm -f /var/lock/subsys/"zope-$INSTANCE_NAME"
     done
@@ -122,36 +93,47 @@ stat_instances()
 	INSTANCE_NAME=`basename $i`
     	INSTANCE_HOME=/var/lib/zope/$INSTANCE_NAME
 	PIDFILE=$INSTANCE_HOME/var/Z2.pid
-	if [ "x$INSTANCE_NAME" = "xmain" ]; then
-	    z_name="Zope"
-	else
-	    z_name="Zope ($INSTANCE_NAME)"
-	fi
-	if [ -f $PIDFILE ]; then
-	    if ps -p `cat $PIDFILE` >/dev/null; then
-	    	RETVAL=$?
-		nls "%s (pid %s) is running..." "$z_name" "`cat $PIDFILE`"
-	    else
-		nls "%s dead but pid file exists" "$z_name"
-		RETVAL=1
-	    fi
-	else
-	    nls "%s is stopped" "$z_name"
-	    RETVAL=2
-	fi
+	$INSTANCE_HOME/bin/zopectl stop
     done
 }
 
 # See how we were called.
 case "$1" in
   start)
-		start_instances && touch /var/lock/subsys/zope
+  		msg_starting "Zope"
+		started
+		start_instances
+		RETVAL=$?
+		if [ "$RETVAL" = 0 ] ; then
+			msg_starting "Zope"
+			ok
+			touch /var/lock/subsys/zope
+		else
+			msg_starting "Zope"
+			fail
+		fi
 	;;
   stop)
-		stop_instances && rm -f /var/lock/subsys/zope
+	if [ -f /var/lock/subsys/named ]; then
+        	msg_stopping "Zope"
+		started
+		stop_instances
+		RETVAL=$?
+		if [ "$RETVAL" = 0 ] ; then
+			msg_stopping "Zope"
+			ok
+		else
+			msg_stopping "Zope"
+			fail
+		fi
+        	rm -f /var/lock/subsys/zope >/dev/null 2>&1
+        else
+	        msg_not_running "Zope"
+                exit 1
+        fi
 	;;
   status)
-		stat_instances
+	stat_instances
 	;;
   restart|force-reload)
 	$0 stop
