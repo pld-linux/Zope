@@ -1,3 +1,5 @@
+%include        /usr/lib/rpm/macros.python
+
 Summary:	An application server and portal toolkit for building Web sites
 Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la construcción de sitios Web
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
@@ -10,7 +12,11 @@ License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
 # Source0-md5:	a8f7f3ba81c4f50dc2d3b61e02f0fb45
-Source1:	%{name}27-skel.tar.gz
+Source1:	%{name}.init
+Source2:	%{name}.sysconfig
+Source3:	%{name}.logrotate
+Source4:	%{name}-start.sh
+Source5:	%{name}.instance
 Patch0:		%{name}-python-2.3.2.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.3
@@ -27,17 +33,8 @@ Requires:	logrotate
 Requires:	python >= 2.2.3
 Requires:	python-modules >= 2.2.3
 Requires:	python-libs >= 2.2.3
+%pyrequires_eq  python
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-%define		python_prefix		%(echo `python -c "import sys; print sys.prefix"`)
-%define		python_version		%(echo `python -c "import sys; print sys.version[:3]"`)
-%define		python_libdir		%{python_prefix}/lib/python%{python_version}
-%define		python_includedir	%{python_prefix}/include/python%{python_version}
-%define		python_sitedir		%{python_libdir}/site-packages
-%define		python_configdir	%{python_libdir}/config
-
-%define		python_compile		python -c "import compileall; compileall.compile_dir('.')"
-%define		python_compile_opt	python -O -c "import compileall; compileall.compile_dir('.')"
 
 %description
 The Z Object Programming Environment (Zope) is a free, Open Source
@@ -73,7 +70,6 @@ eles ao invés desse RPM.
 %prep
 
 %setup -q -n %{name}-%{version}-%{sub_ver}
-tar xzf %{SOURCE1}
 %patch0 -p1
 
 %build
@@ -91,13 +87,24 @@ perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/log/zope}
+install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope,%{_examplesdir}} \
+	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
+	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/instances,%{_sbindir}}
 
 %{__make} install INSTALL_FLAGS="--optimize=1 --root $RPM_BUILD_ROOT"
 
 mv $RPM_BUILD_ROOT%{_libdir}{/python,/zope}
 mv $RPM_BUILD_ROOT%{_bindir}{/zpasswd.py,/zpasswd}
-rm $RPM_BUILD_ROOT%{_bindir}/*.py
+mv $RPM_BUILD_ROOT{%{_prefix}/import,%{_examplesdir}/%{name}-%{version}}
+rm -f $RPM_BUILD_ROOT%{_bindir}/*.py
+rm -rf $RPM_BUILD_ROOT/usr/doc/
+rm -rf $RPM_BUILD_ROOT/usr/skel/
+
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
+install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/zope
+install %{SOURCE3} $RPM_BUILD_ROOT/etc/logrotate.d/zope
+install %{SOURCE4} $RPM_BUILD_ROOT%{_sbindir}/zope-start
+install %{SOURCE5} $RPM_BUILD_ROOT/etc/zope/instances/main
 
 #install utilities/zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
 #install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
@@ -167,9 +174,10 @@ fi
 
 %files
 %defattr(644,root,root,755)
+%doc doc
 %attr(754,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_bindir}/*
-# %%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
 %attr(640,root,root) %dir /var/lib/zope
 %attr(1771,root,zope) %dir /var/lib/zope/main
@@ -177,8 +185,8 @@ fi
 %attr(640,root,root) %dir /etc/zope/instances
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/*
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/zope.conf
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
+%{_examplesdir}/*
 %ghost /var/log/zope/main.log
 %ghost /var/log/zope/main-detailed.log
