@@ -27,6 +27,7 @@ Source7:	%{name}-zopectl
 Source8:	%{name}-installzopeproduct
 Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
+Patch2:		%{name}-pld_makefile_fix.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.3.3
 BuildRequires:	perl-base
@@ -85,13 +86,14 @@ eles ao invés desse RPM.
 %setup -q -n %{name}-%{version}-%{sub_ver}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 
 ./configure \
-	--prefix=%{zope_dir} 
-# \	--with-python=/usr/bin/python
+	--prefix=%{zope_dir}
+#	--with-python=/usr/bin/python
 
 %{__make}
 
@@ -103,8 +105,10 @@ rm -rf $RPM_BUILD_ROOT
 
 install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} \
 	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
-	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}}
+	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}} \
+	$RPM_BUILD_ROOT/%{zope_dir}/bin
 
+ln -sfn /usr/bin/python $RPM_BUILD_ROOT/%{zope_dir}/bin/python
 %{__make} install INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
 
 mv $RPM_BUILD_ROOT%{zope_dir}/bin/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
