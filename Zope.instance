@@ -22,7 +22,7 @@ ZOPE_USER=zope
 IP_ADDRESS=
 
 # ports to listen on (0 means disabled)
-HTTP_PORT=801
+HTTP_PORT=80
 FTP_PORT=21
 IPC_PORT=80
 
@@ -45,6 +45,6 @@ DEBUG_MODE=0
 LOG_FILE=
 
 # detailed log filename path
-# (empty means no expensive logging)
+# (empty means no detailed logging)
 # ('yes' means /var/log/zope/INSTANCE_NAME-detailed.log)
 DETAILED_LOG_FILE=yes

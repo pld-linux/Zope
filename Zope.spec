@@ -4,7 +4,7 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.6.2b5
-Release:	2
+Release:	4
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
@@ -28,7 +28,7 @@ Source11:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source11-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 Patch0:		%{name}-http-virtual-cache.patch
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 2.3
+BuildRequires:	python-devel >= 2.2.2
 BuildRequires:	perl
 PreReq:		rc-scripts
 Requires(pre): /usr/bin/getgid
@@ -39,9 +39,9 @@ Requires(postun):      /usr/sbin/userdel
 Requires(postun):      /usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
-Requires:	python >= 2.3
-Requires:	python-modules >= 2.3
-Requires:	python-libs >= 2.3
+Requires:	python >= 2.2.2
+Requires:	python-modules >= 2.2.2
+Requires:	python-libs >= 2.2.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		python_prefix		%(echo `python -c "import sys; print sys.prefix"`)
@@ -153,7 +153,7 @@ if [ -f /var/lib/zope/Data.fs ]; then
 	    /etc/rc.d/init.d/zope stop >&2
 	    was_stopped=1
 	fi
-	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -r * ./main
+	[ -d /var/lib/zope/main ] && cd /var/lib/zope && mv -f * ./main
 	if [ "x$was_stopped" = "x1" ]; then
 	    /etc/rc.d/init.d/zope start
 	fi
@@ -190,11 +190,11 @@ fi
 %{_libdir}/zope
 %attr(640,root,root) %dir /var/lib/zope
 %attr(1771,root,zope) %dir /var/lib/zope/main
+%attr(640,root,root) %dir /etc/zope
+%attr(640,root,root) %dir /etc/zope/instances
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/*
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
-%attr(640,root,root) /etc/zope
-%attr(640,root,root) /etc/zope/instances
 %ghost /var/log/zope/main.log
 %ghost /var/log/zope/main-detailed.log
