@@ -4,7 +4,7 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.6.0
-Release:	1
+Release:	2
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.tgz
@@ -92,6 +92,7 @@ install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope} \
 cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
 cp -a ZServer/ utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
 find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
+cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
 
 install zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
 install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
@@ -149,6 +150,6 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
-%attr(771,root,zope) %dir /var/lib/zope
+%attr(1771,root,zope) %dir /var/lib/zope
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
 %doc *.gz doc/*.gz ZopeContentManagersGuide GuideToZSQL Tutorial ZopeDevelopersGuide ZopeAdminGuide
