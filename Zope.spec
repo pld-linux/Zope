@@ -11,13 +11,13 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.7.2
+Version:	2.7.3
 # %%define		sub_ver b2
-Release:	5
+Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-0.tgz
-# Source0-md5:	08b3c4a119aa1ded2e7b1b3d5bc45425
+# Source0-md5:	15001ab6d429dc80b1f49735e8d2ee10
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
