@@ -1,0 +1,105 @@
+diff -durN Zope-2.7.0-b2.orig/skel/README.txt Zope-2.7.0-b2/skel/README.txt
+--- Zope-2.7.0-b2.orig/skel/README.txt	Tue Mar 18 22:22:00 2003
++++ Zope-2.7.0-b2/skel/README.txt	Sat Nov 15 10:33:17 2003
+@@ -2,8 +2,11 @@
+ server.  It contains the following directories:
+ 
+   bin/         Scripts used to control the Zope instance
+-  etc/         Configuration files
+   Extensions/  Python sources for External Methods
+-  log/         Log files
+   Products/    Installed products specific to the instance
+   var/         Run-time data files, including the object database
++
++In PLD some files are placed outside "instance home":
++
++  /etc/zope/$instance_name      Configuration files
++  /var/log/zope/$instance_name  Log files
+diff -durN Zope-2.7.0-b2.orig/skel/bin/runzope.in Zope-2.7.0-b2/skel/bin/runzope.in
+--- Zope-2.7.0-b2.orig/skel/bin/runzope.in	Thu Jul 24 22:19:19 2003
++++ Zope-2.7.0-b2/skel/bin/runzope.in	Sat Nov 15 10:05:42 2003
+@@ -3,7 +3,7 @@
+ PYTHON="<<PYTHON>>"
+ ZOPE_HOME="<<ZOPE_HOME>>"
+ INSTANCE_HOME="<<INSTANCE_HOME>>"
+-CONFIG_FILE="<<INSTANCE_HOME>>/etc/zope.conf"
++CONFIG_FILE="<<CONFIG_FILE>>"
+ SOFTWARE_HOME="<<SOFTWARE_HOME>>"
+ PYTHONPATH="$SOFTWARE_HOME"
+ export PYTHONPATH
+diff -durN Zope-2.7.0-b2.orig/skel/bin/zopectl.in Zope-2.7.0-b2/skel/bin/zopectl.in
+--- Zope-2.7.0-b2.orig/skel/bin/zopectl.in	Thu Jul 24 22:19:19 2003
++++ Zope-2.7.0-b2/skel/bin/zopectl.in	Sat Nov 15 10:05:56 2003
+@@ -3,7 +3,7 @@
+ PYTHON="<<PYTHON>>"
+ ZOPE_HOME="<<ZOPE_HOME>>"
+ INSTANCE_HOME="<<INSTANCE_HOME>>"
+-CONFIG_FILE="<<INSTANCE_HOME>>/etc/zope.conf"
++CONFIG_FILE="<<CONFIG_FILE>>"
+ SOFTWARE_HOME="<<SOFTWARE_HOME>>"
+ PYTHONPATH="$SOFTWARE_HOME"
+ export PYTHONPATH
+diff -durN Zope-2.7.0-b2.orig/skel/etc/zope.conf.in Zope-2.7.0-b2/skel/etc/zope.conf.in
+--- Zope-2.7.0-b2.orig/skel/etc/zope.conf.in	Sat Nov 15 09:59:53 2003
++++ Zope-2.7.0-b2/skel/etc/zope.conf.in	Sat Nov 15 10:07:08 2003
+@@ -11,6 +11,7 @@
+ 
+ %define INSTANCE <<INSTANCE_HOME>>
+ %define ZOPE <<ZOPE_HOME>>
++%define INSTANCE_NAME <<INSTANCE_NAME>>
+ 
+ # Directive: instancehome
+ #
+@@ -651,7 +652,7 @@
+ <eventlog>
+   level all
+   <logfile>
+-    path $INSTANCE/log/event.log
++    path /var/log/zope/$INSTANCE_NAME/event.log
+     level info
+   </logfile>
+ </eventlog>
+@@ -659,7 +660,7 @@
+ <logger access>
+   level WARN
+   <logfile>
+-    path $INSTANCE/log/Z2.log
++    path /var/log/zope/$INSTANCE_NAME/Z2.log
+     format %(message)s
+   </logfile>
+ </logger>
+diff -durN Zope-2.7.0-b2.orig/skel/log/README.txt Zope-2.7.0-b2/skel/log/README.txt
+--- Zope-2.7.0-b2.orig/skel/log/README.txt	Tue Mar 18 22:22:05 2003
++++ Zope-2.7.0-b2/skel/log/README.txt	Thu Jan  1 01:00:00 1970
+@@ -1 +0,0 @@
+-This is the directory used to hold log files by default.
+diff -durN Zope-2.7.0-b2.orig/utilities/mkzopeinstance.py Zope-2.7.0-b2/utilities/mkzopeinstance.py
+--- Zope-2.7.0-b2.orig/utilities/mkzopeinstance.py	Mon Aug 25 23:32:48 2003
++++ Zope-2.7.0-b2/utilities/mkzopeinstance.py	Sat Nov 15 10:05:23 2003
+@@ -81,11 +81,12 @@
+ 
+     instancehome = skeltarget
+     zopehome = os.path.dirname(os.path.dirname(script))
+-    softwarehome = os.path.join(zopehome, "lib", "python")
+-    configfile = os.path.join(instancehome, 'etc', 'zope.conf')
++    softwarehome = os.path.join(zopehome, "zope")
++    instancename = os.path.basename(instancehome)
++    configfile = os.path.join('/etc/zope', instancename, 'zope.conf')
+     if skelsrc is None:
+         # default to using stock Zope skeleton source
+-        skelsrc = os.path.join(zopehome, "skel")
++        skelsrc = os.path.join("/etc/zope/skel")
+ 
+     inituser = os.path.join(instancehome, "inituser")
+     if not (user or os.path.exists(inituser)):
+@@ -113,8 +114,10 @@
+     kw = {
+         "PYTHON":PYTHON,
+         "PYTHONW":PYTHONW,
++        "INSTANCE_NAME": instancename,
+         "INSTANCE_HOME": instancehome,
+         "SOFTWARE_HOME": softwarehome,
++        "CONFIG_FILE": configfile,
+         "ZOPE_HOME": zopehome,
+         }
+ 

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -n "$1" -a -d /var/lib/zope/"$1" ] ; then
+	instance="$1"
+	shift
+else
+	instance="main"
+fi
+
+exec /var/lib/zope/"$instance"/bin/runzope $*

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+usage() {
+	echo "Usage:"
+	echo "  $1 product_dir [product_name]"
+	echo "  or"
+	echo "  $1 -d product_name"
+	exit 1
+}
+
+AUTO_INSTALL_PRODUCTS="main"
+[ -f /etc/sysconfig/zope ] && . /etc/sysconfig
+
+if [ -z "$1" ] ; then
+	usage $0
+elif [ "$1" = "-d" ] ; then
+	shift
+	if [ -z "$1" ] ; then
+		usage $0
+	fi
+	for INSTANCE_NAME in $AUTO_INSTALL_PRODUCTS ; do
+		INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
+		rm -f "$INSTANCE_HOME/Products/$1"
+	done
+else
+	for INSTANCE_NAME in $AUTO_INSTALL_PRODUCTS ; do
+		INSTANCE_HOME="/var/lib/zope/$INSTANCE_NAME"
+		ln -sf "$1" "$INSTANCE_HOME/Products/$2"
+	done
+fi

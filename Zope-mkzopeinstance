@@ -1,0 +1,34 @@
+#!/bin/sh
+
+if [ -z "$1" ] ; then
+	echo "Usage:"
+	echo "  $0 name [name:password]"
+	exit 1
+fi
+
+name="$1"
+destdir="/var/lib/zope/$name"
+
+if [ -n "$2" ] ; then
+	namepass="-u $2"
+else
+	namepass=""
+fi
+
+umask 002
+python /usr/lib/zope/mkzopeinstance.py \
+	-s /etc/zope/skel \
+	-d "$destdir" \
+	$namepass || exit $?
+
+install -d "/etc/zope/$name"
+mv "${destdir}"/etc/* "/etc/zope/$name"
+
+chmod a+x "${destdir}"/bin/*
+
+install -d "/var/log/zope/$name"
+
+chown root.zope "${destdir}" "/var/log/zope/$name"
+chmod 770 "${destdir}" "/var/log/zope/$name"
+chown -R zope.zope "${destdir}"/*
+chmod a+X  "${destdir}"/*
