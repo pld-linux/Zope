@@ -18,8 +18,6 @@ Source5:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
 # Source5-md5:	10f363dd061a1af8d472c51c32fa0a0e
 Source6:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
 # Source6-md5:	0cddb5688fc0f886db468da08251fb81
-Source7:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
-# Source7-md5:	4b1b6f13826ecef3667ef54da948b867
 Source8:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
 # Source8-md5:	0344ca88acb8a71688d2925975a55443
 Source9:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
@@ -28,6 +26,7 @@ Source10:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
 # Source10-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2
+BuildRequires:	perl
 PreReq:		rc-scripts
 Requires(pre): /usr/bin/getgid
 Requires(pre): /bin/id
@@ -37,7 +36,9 @@ Requires(postun):      /usr/sbin/userdel
 Requires(postun):      /usr/sbin/groupdel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	logrotate
+Requires:	python >= 2.2
 Requires:	python-modules >= 2.2
+Requires:	python-libs >= 2.2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		python_prefix		%(echo `python -c "import sys; print sys.prefix"`)
@@ -88,7 +89,6 @@ mkdir ZopeBook
 tar xzf %{SOURCE4} -C ZopeContentManagersGuide
 tar xzf %{SOURCE5} -C GuideToDTML
 tar xzf %{SOURCE6} -C GuideToZSQL
-tar xzf %{SOURCE7} -C ZopeDevelopersGuide
 tar xzf %{SOURCE8} -C ZopeAdminGuide
 tar xzf %{SOURCE9} -C ZopeBook
 
