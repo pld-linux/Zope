@@ -1,12 +1,10 @@
 #!/bin/sh
 
-if [ -n "$1" ] ; then
+if [ -n "$1" -a -d /var/lib/zope/"$1" ] ; then
 	instance="$1"
 	shift
 else
 	instance="main"
 fi
 
-PYTHONPATH="/usr/lib/zope"; export PYTHONPATH
-exec /usr/bin/python "/usr/lib/zope/Zope/Startup/run.py" \
-	-C "/etc/zope/$instance/zope.conf" "$@"
+exec /var/lib/zope/"$instance"/bin/runzope $*
