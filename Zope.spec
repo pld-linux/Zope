@@ -12,7 +12,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.0
 %define		sub_ver b3
-Release:	3.%{sub_ver}.3
+Release:	3.%{sub_ver}.4
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
@@ -46,6 +46,8 @@ Requires:	expat >= 1.95.7
 Requires:	python-PyXML >= 0.8.3
 %pyrequires_eq  python
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define		zope_dir /usr/lib/zope
 
 %description
 The Z Object Programming Environment (Zope) is a free, Open Source
@@ -88,7 +90,8 @@ eles ao invés desse RPM.
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 
 ./configure \
-	--prefix=/usr
+	--prefix=%{zope_dir} \
+	--with-python=/usr/bin/python
 
 %{__make}
 
@@ -104,13 +107,11 @@ install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} 
 
 %{__make} install INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
 
-mv $RPM_BUILD_ROOT%{_libdir}{/python,/zope}
-mv $RPM_BUILD_ROOT%{_bindir}/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
-mv $RPM_BUILD_ROOT%{_bindir}/*.py $RPM_BUILD_ROOT%{_libdir}/zope
-mv $RPM_BUILD_ROOT/usr/skel $RPM_BUILD_ROOT%{_sysconfdir}/zope
-mv $RPM_BUILD_ROOT{%{_prefix}/import/*,%{_sysconfdir}/zope/skel/import}
+mv $RPM_BUILD_ROOT%{zope_dir}/bin/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
+mv $RPM_BUILD_ROOT%{zope_dir}/skel $RPM_BUILD_ROOT%{_sysconfdir}/zope
+mv $RPM_BUILD_ROOT{%{zope_dir}/import/*,%{_sysconfdir}/zope/skel/import}
 
-rm -rf $RPM_BUILD_ROOT/usr/doc/
+rm -rf $RPM_BUILD_ROOT%{zope_dir}/doc/
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/log
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/bin/{runzope.bat,zopeservice.py}.in
 
@@ -193,9 +194,8 @@ fi
 %defattr(644,root,root,755)
 %doc doc/*
 %attr(754,root,root) /etc/rc.d/init.d/zope
-%attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
-%{_libdir}/zope
+%{zope_dir}
 %attr(775,zope,zope) %dir /var/run/zope
 %attr(775,zope,zope) %dir /var/lib/zope
 %attr(775,zope,zope) %dir /var/lib/zope/main
