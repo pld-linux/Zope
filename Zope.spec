@@ -11,12 +11,12 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.7.0
-%define		sub_ver rc2
-Release:	3.%{sub_ver}.1
+# %%define		sub_ver rc2
+Release:	4
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
-# Source0-md5:	889478e99a5bb324de5ee265892bfe69
+Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}.tgz
+# Source0-md5:	f733cd97f32411d43d372ac61eed98f4
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
@@ -83,7 +83,7 @@ eles ao invés desse RPM.
 
 %prep
 
-%setup -q -n %{name}-%{version}-%{sub_ver}
+%setup -q -n %{name}-%{version}
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
