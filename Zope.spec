@@ -47,7 +47,7 @@ Requires:	python-modules >= 2.3.3
 Requires:	python-libs >= 2.3.3
 Requires:	expat >= 1.95.7
 Requires:	python-PyXML >= 0.8.3
-%pyrequires_eq  python
+%pyrequires_eq	python
 Obsoletes:	Zope-Hotfix = 040713
 Obsoletes:	Zope-Hotfix = 040714
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -145,12 +145,12 @@ rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -z "`getgid zope`" ]; then
-       echo "Making group zope"
-       /usr/sbin/groupadd -r -f zope
+	echo "Making group zope"
+	/usr/sbin/groupadd -r -f zope
 fi
 if [ -z "`id -u zope 2>/dev/null`" ]; then
-       echo "Making user zope"
-       /usr/sbin/useradd -r -d /var/lib/zope/main -s /bin/false -c "Zope User" -g zope zope
+	echo "Making user zope"
+	/usr/sbin/useradd -r -d /var/lib/zope/main -s /bin/false -c "Zope User" -g zope zope
 fi
 
 %post
@@ -167,13 +167,13 @@ for dir in /var/lib/zope/main /var/lib/zope ; do
 	if [ -f $dir/Data.fs ]; then
 		echo "Found the database in old location. Migrating..."
 		if [ -f /var/lock/subsys/zope ]; then
-		    /etc/rc.d/init.d/zope stop >&2
-		    was_stopped=1
+			/etc/rc.d/init.d/zope stop >&2
+			was_stopped=1
 		fi
 		umask 022
 		[ -d /var/lib/zope/main ] && cd $dir && mv -f Data* /var/lib/zope/main/var 2>/dev/null
 		if [ "x$was_stopped" = "x1" ]; then
-		    /etc/rc.d/init.d/zope start >&2
+			/etc/rc.d/init.d/zope start >&2
 		fi
 		echo "Migration completed (new db location is /var/lib/zope/main/var)"
 		break
@@ -181,7 +181,7 @@ for dir in /var/lib/zope/main /var/lib/zope ; do
 done
 if [ -f /var/lock/subsys/zope ]; then
 	if [ "x$was_stopped" != "x1" ]; then
-	    /etc/rc.d/init.d/zope restart >&2
+		/etc/rc.d/init.d/zope restart >&2
 	fi
 else
 	echo "look at /etc/zope/main/zope.conf" >&2
@@ -199,10 +199,10 @@ fi
 
 %postun
 if [ "$1" = "0" ] ; then
-       echo "Removing user zope"
-       /usr/sbin/userdel zope >/dev/null 2>&1 || :
-       echo "Removing group zope"
-       /usr/sbin/groupdel zope >/dev/null 2>&1 || :
+	echo "Removing user zope"
+	/usr/sbin/userdel zope >/dev/null 2>&1 || :
+	echo "Removing group zope"
+	/usr/sbin/groupdel zope >/dev/null 2>&1 || :
 fi
 
 %files
