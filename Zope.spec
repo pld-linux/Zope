@@ -13,7 +13,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.3
 # %%define		sub_ver b2
-Release:	2
+Release:	3
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-0.tgz
@@ -31,6 +31,7 @@ Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
 Patch3:		%{name}-no_initgroups.patch
 Patch4:		%{name}-xhtml_unicode_fix.patch
+Patch5:		%{name}-python24.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	perl-base
@@ -99,6 +100,7 @@ eles ao invés desse RPM.
 %patch3 -p1
 %endif
 %patch4 -p1
+%patch5 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
