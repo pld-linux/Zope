@@ -11,12 +11,12 @@ Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.7.0
-%define		sub_ver b2
+%define		sub_ver b3
 Release:	3.%{sub_ver}.1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
-# Source0-md5:	a8f7f3ba81c4f50dc2d3b61e02f0fb45
+# Source0-md5:	49d981bb35c33fda6d53b438fb9c9ad7
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
@@ -25,9 +25,8 @@ Source5:	%{name}-mkzeoinstance
 Source6:	%{name}-runzope
 Source7:	%{name}-zopectl
 Source8:	%{name}-installzopeproduct
-Patch0:		%{name}-python-2.3.2.patch
-Patch1:		%{name}-default_config.patch
-Patch2:		%{name}-instance_paths.patch
+Patch0:		%{name}-default_config.patch
+Patch1:		%{name}-instance_paths.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.3
 BuildRequires:	perl-base
@@ -82,7 +81,6 @@ eles ao invés desse RPM.
 %setup -q -n %{name}-%{version}-%{sub_ver}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
