@@ -8,7 +8,7 @@ Release:	2
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}/%{version}/%{name}-%{version}-src.tgz
-# Source0-md5:	a17f36b86b6e489797d8e52f1ba48efe
+# Source0-md5:	a0e873d54994231d7c03640f7092a4fb
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}.sysconfig
@@ -19,7 +19,7 @@ Source7:	%{name}-installzopeproduct
 Source8:	http://zope.org/Documentation/Guides/ZCMG/Tarred%20HTML%202.1.1/ZCMG.html.tgz
 # Source8-md5:	4c52eebc2e874a0590ac9c04e222e9f1
 Source9:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1/DTML.html.tgz
-#Source9-md5:	10f363dd061a1af8d472c51c32fa0a0e
+# Source9-md5:	10f363dd061a1af8d472c51c32fa0a0e
 Source10:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
 # Source10-md5:	0cddb5688fc0f886db468da08251fb81
 Source11:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
