@@ -1,0 +1,11 @@
+#!/bin/sh
+
+if [ -n "$1" ] ; then
+	instance="$1"
+else
+	instance="main"
+fi
+
+PYTHONPATH="/usr/lib/zope"; export PYTHONPATH
+exec /usr/bin/python "/usr/lib/zope/Zope/Startup/zopectl.py" \
+	-C "/etc/zope/$instance/zope.conf" "$@"
