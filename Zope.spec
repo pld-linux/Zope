@@ -171,5 +171,5 @@ fi
 %attr(1771,root,zope) %dir /var/lib/zope
 %attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/*
 %attr(640,root,root) /etc/logrotate.d/zope
-# ghost /var/log/zope
-%attr(640,root,root) /var/log/zope
+%ghost /var/log/zope
+# %attr(640,root,root) /var/log/zope
