@@ -106,16 +106,18 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} \
 	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}} \
-	$RPM_BUILD_ROOT/%{zope_dir}/bin
+	$RPM_BUILD_ROOT%{zope_dir}/bin
 
-ln -sfn /usr/bin/python $RPM_BUILD_ROOT/%{zope_dir}/bin/python
-%{__make} install INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
+ln -sfn /usr/bin/python $RPM_BUILD_ROOT%{zope_dir}/bin/python
+
+%{__make} install \
+	INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
 
 mv $RPM_BUILD_ROOT%{zope_dir}/bin/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
 mv $RPM_BUILD_ROOT%{zope_dir}/skel $RPM_BUILD_ROOT%{_sysconfdir}/zope
 mv $RPM_BUILD_ROOT{%{zope_dir}/import/*,%{_sysconfdir}/zope/skel/import}
 
-rm -rf $RPM_BUILD_ROOT%{zope_dir}/doc/
+rm -rf $RPM_BUILD_ROOT%{zope_dir}/doc
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/log
 rm -f $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/bin/{runzope.bat,zopeservice.py}.in
 
