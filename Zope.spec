@@ -11,6 +11,7 @@ Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
 # Source0-md5:	a8f7f3ba81c4f50dc2d3b61e02f0fb45
 Source1:	%{name}27-skel.tar.gz
+Patch0:		%{name}-python-2.3.2.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.3
 BuildRequires:	perl
@@ -73,6 +74,7 @@ eles ao invés desse RPM.
 
 %setup -q -n %{name}-%{version}-%{sub_ver}
 tar xzf %{SOURCE1}
+%patch0 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
@@ -83,28 +85,21 @@ perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_
 
 %{__make}
 
-find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm -f \{\} \;
-find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm -f \{\} \;
-rm -f ZServer/medusa/monitor_client_win32.py
-
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 # python wo_pcgi.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT{%{_bindir},%{_sbindir},%{_libdir}/zope}
-install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,zope/instances,logrotate.d,sysconfig}
-install -d $RPM_BUILD_ROOT{/var/log/zope,/var/lib/zope/main}
 
-cp -a lib/python/* $RPM_BUILD_ROOT%{_libdir}/zope
-cp -a utilities/ import/ $RPM_BUILD_ROOT%{_libdir}/zope
-cp -a %{name}-skel/* $RPM_BUILD_ROOT/
-rm -rf %{name}-skel
+install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/log/zope}
 
-# find $RPM_BUILD_ROOT%{_libdir}/zope -type f -name '*.py' -or -name '*.txt' | xargs -r rm -f
-# cp -a ZServer/medusa/test/* $RPM_BUILD_ROOT%{_libdir}/zope/ZServer/medusa/test/
+%{__make} install INSTALL_FLAGS="--optimize=1 --root $RPM_BUILD_ROOT"
 
-install utilities/zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
+mv $RPM_BUILD_ROOT%{_libdir}{/python,/zope}
+mv $RPM_BUILD_ROOT%{_bindir}{/zpasswd.py,/zpasswd}
+rm $RPM_BUILD_ROOT%{_bindir}/*.py
+
+#install utilities/zpasswd.py $RPM_BUILD_ROOT%{_bindir}/zpasswd
 #install z2.py $RPM_BUILD_ROOT%{_libdir}/zope
 #install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/main/Data.fs
 
@@ -177,11 +172,11 @@ fi
 # %%attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
 %attr(640,root,root) %dir /var/lib/zope
-%attr(1771,root,zope) %dir /var/lib/zope/main/*
+%attr(1771,root,zope) %dir /var/lib/zope/main
 %attr(640,root,root) %dir /etc/zope
 %attr(640,root,root) %dir /etc/zope/instances
-%attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/
+%attr(660,root,zope) %config(noreplace) %verify(not md5 size mtime) /var/lib/zope/main/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/instances/*
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/zope.conf
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
