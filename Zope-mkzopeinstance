@@ -30,4 +30,4 @@ install -d "/var/log/zope/$name"
 chown root.zope "${destdir}" "/var/log/zope/$name"
 chmod 770 "/var/log/zope/$name"
 
-echo "Set the initial user password with: zpasswd ${destdir}/var/inituser" >&2
+echo "Set the initial user password with: zpasswd ${destdir}/inituser" >&2
