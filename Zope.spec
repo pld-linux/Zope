@@ -3,7 +3,7 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.4.1
-Release:	1
+Release:	2
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
@@ -19,6 +19,7 @@ URL:		http://www.zope.org/
 Source7:	%{name}.init
 Source8:	%{name}-zserver.sh
 Prereq:		rc-scripts
+Prereq:		/sbin/chkconfig
 Prereq:		/usr/sbin/useradd
 Requires:	python >= 2.1
 BuildRequires:	python-devel >= 2.1
@@ -73,9 +74,9 @@ eles ao invés desse RPM.
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 python wo_pcgi.py
 
-find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm \{\} \;
-find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm \{\} \;
-rm ZServer/medusa/monitor_client_win32.py
+find lib/python -type f -and \( -name 'Setup' -or -name '.cvsignore' \) -exec rm -f \{\} \;
+find -type f -and \( -name '*.c' -or -name '*.h' -or -name 'Makefile*' \) -exec rm -f \{\} \;
+rm -f ZServer/medusa/monitor_client_win32.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -95,7 +96,11 @@ install var/Data.fs $RPM_BUILD_ROOT/var/lib/zope/Data.fs
 touch $RPM_BUILD_ROOT/var/log/zope
 
 python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD_ROOT/var/lib/zope/access
+
 gzip -9nf doc/*.txt *.txt
+
+%clean
+rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ -z "`getgid zope`" ]; then
@@ -131,9 +136,6 @@ if [ "$1" = "0" ]; then
 	fi
 	/sbin/chkconfig --del zope
 fi
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
