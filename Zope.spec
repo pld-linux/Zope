@@ -32,7 +32,7 @@ Patch2:		%{name}-pld_makefile_fix.patch
 Patch3:		%{name}-no_initgroups.patch
 Patch4:		%{name}-xhtml_unicode_fix.patch
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 2.3.3
+BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts
