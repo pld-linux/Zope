@@ -1,11 +1,13 @@
-Summary:	An application server and portal toolkit for building Web sites.
+Summary:	An application server and portal toolkit for building Web sites
+Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la construcción de sitios Web
+Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.4.1
 Release:	1
+License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Group(de):	Netzwerkwesen/Server
 Group(pl):	Sieciowe/Serwery
-License:	Zope Public License (ZPL)
 Source0:	http://www.zope.org/Download/Releases/%{name}-%{version}/%{name}-%{version}-src.tgz
 Source1:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
 Source2:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
@@ -16,7 +18,7 @@ Source6:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
 URL:		http://www.zope.org/
 Source7:	%{name}.init
 Source8:	%{name}-zserver.sh
-Prereq:		/sbin/chkconfig 
+Prereq:		rc-scripts
 Prereq:		/usr/sbin/useradd
 Requires:	python >= 2.1
 BuildRequires:	python-devel >= 2.1
@@ -37,6 +39,25 @@ The Z Object Programming Environment (Zope) is a free, Open Source
 Python-based application server for building high-performance, dynamic
 web sites, using a powerful and simple scripting object model and
 high-performance, integrated object database.
+
+%description -l es
+Zope es una aplicación basada en Python, Open Source[tm], para la
+construcción de sitios dinámicos, usa un modelo de escritura de
+guiones poderoso y sencillo. Para instalar la aplicación Zope, instale
+ese paquete y después, Zope-server, para un servidor HTTP integrado
+simple, Zope-pcgi, para uso con el servidor Apache. Si desea instalar
+solamente algunas partes de la aplicación Zope, están diponibles otros
+subpaquetes, usted debe instalar éstos en vez de ese RPM.
+
+%description -l pt_BR
+Zope é uma aplicação baseada em Python, Open Source[tm], para
+construção de sites dinâmicos, usando um modelo de scripting poderoso
+e simples Para instalar o Zope, instale esse pacote e depois, ou o
+Zope-server, para um servidor HTTP integrado simples, ou Zope-pcgi,
+para uso com o Apache. Se você quiser instalar apenas algumas partes
+do Zope, outros sub-pacotes estão disponíveis, e você deveria instalar
+eles ao invés desse RPM.
+
 
 %prep
 %setup -q -n %{name}-%{version}-src
@@ -77,13 +98,15 @@ python $RPM_BUILD_ROOT%{_bindir}/zpasswd -u zope -p zope -d localhost $RPM_BUILD
 gzip -9nf doc/*.txt *.txt
 
 %pre
-  if [ -z "`getgid zope`" ]; then
-	groupadd -r -f zope
-  fi
+if [ -z "`getgid zope`" ]; then
+	echo "Making group zope"
+	/usr/sbin/groupadd -r -f zope
+fi
 
-  if [ -z "`id -u zope 2>/dev/null`" ]; then
-	useradd -r -d /var/lib/zope -s /bin/false -c "Zope User" -g zope zope
-  fi
+if [ -z "`id -u zope 2>/dev/null`" ]; then
+	echo "Making user zope"
+	/usr/sbin/useradd -r -d /var/lib/zope -s /bin/false -c "Zope User" -g zope zope
+fi
 
 %post
 /sbin/chkconfig --add zope
@@ -94,9 +117,11 @@ else
 fi
 
 %postun
-if [ $1 = 0 ] ; then
-    userdel zope >/dev/null 2>&1 || :
-    groupdel zope >/dev/null 2>&1 || :	
+if [ "$1" = "0" ] ; then
+	echo "Removing user zope"
+	/usr/sbin/userdel zope >/dev/null 2>&1 || :
+	echo "Removing group zope"
+	/usr/sbin/groupdel zope >/dev/null 2>&1 || :	
 fi
 
 %preun
