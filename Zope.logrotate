@@ -1,6 +1,6 @@
 /var/log/zope/*/*.log {
 create 644 zope zope	
 	postrotate
-		/etc/rc.d/init.d/zope reload >/dev/null 2>&1
+		/etc/rc.d/init.d/zope restart >/dev/null 2>&1
 	endscript
 }
