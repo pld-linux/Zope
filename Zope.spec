@@ -198,8 +198,8 @@ fi
 %attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
 %attr(771,root,root) %dir /var/run/zope
-%attr(771,root,root) %dir /var/lib/zope
-%attr(1771,root,zope) %dir /var/lib/zope/main
+%attr(751,root,zope) %dir /var/lib/zope
+%attr(751,root,zope) %dir /var/lib/zope/main
 %attr(771,root,root) %dir /var/log/zope
 %attr(771,root,zope) %dir /var/log/zope/main
 %attr(640,root,root) %dir /etc/zope
