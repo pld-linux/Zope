@@ -12,13 +12,13 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.7.1
+Version:	2.7.2
 # %%define		sub_ver b2
-Release:	4
+Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}.tgz
-# Source0-md5:	ae9d4bb3f7220dfffb6e91b42503b16c
+Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-0.tgz
+# Source0-md5:	08b3c4a119aa1ded2e7b1b3d5bc45425
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
@@ -48,9 +48,9 @@ Requires:	python-modules >= 2.3.3
 Requires:	python-libs >= 2.3.3
 Requires:	expat >= 1.95.7
 Requires:	python-PyXML >= 0.8.3
-Requires:	Zope-Hotfix = 040714
 %pyrequires_eq  python
 Obsoletes:	Zope-Hotfix = 040713
+Obsoletes:	Zope-Hotfix = 040714
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		zope_dir /usr/lib/zope
