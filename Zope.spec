@@ -11,13 +11,13 @@ Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la c
 Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.7.4
+Version:	2.7.5
 # %%define		sub_ver b2
 Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
-Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-0.tgz
-# Source0-md5:	97c310f1de4609956c176588b08b25c5
+Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
+# Source0-md5:	5b5c5823c62370d9f7325c6014a49d8b
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
@@ -30,7 +30,7 @@ Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
 Patch3:		%{name}-no_initgroups.patch
-Patch5:		%{name}-python24.patch
+Patch4:		%{name}-python24.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	perl-base
@@ -91,14 +91,14 @@ eles ao invés desse RPM.
 
 %prep
 
-%setup -q -n %{name}-%{version}-0
+%setup -q -n %{name}-%{version}-final
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %ifarch amd64 alpha
 %patch3 -p1
 %endif
-%patch5 -p1
+%patch4 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
