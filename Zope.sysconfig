@@ -1,0 +1,10 @@
+# Customized settings for Zope Instances
+
+# Define nice level for Zope Server
+SERVICE_RUN_NICE_LEVEL="+5"
+
+# Instances to automatically start
+INSTANCES="main"
+
+# Instances for which all products should be automatically installed
+AUTO_INSTALL_PRODUCTS="main"
