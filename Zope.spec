@@ -35,8 +35,8 @@ BuildRequires:	python-devel >= 2.3.3
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.159
 PreReq:		rc-scripts
-Requires(pre):	/usr/bin/getgid
 Requires(pre):	/bin/id
+Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires(postun):	/usr/sbin/groupdel
