@@ -24,52 +24,62 @@ else
 fi
 
 CLIENT_HOME=/var/lib/zope
+PIDFILE=${CLIENT_HOME}/Z2.pid
 
 RETVAL=0
-
 # See how we were called.
 case "$1" in
   start)
-	if [ -f /var/lock/subsys/zope ]; then
-		msg_already_running Zope
-	else 	
+	if [ ! -f /var/lock/subsys/zope ]; then
 		msg_starting Zope
-		busy
 		daemon zope-zserver
 		RETVAL=$?;
 		sleep 5
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/zope
+	else 	
+		msg_already_running Zope
 	fi
 	;;
   stop)
 	if [ -f /var/lock/subsys/zope ]; then
 		msg_stopping Zope
+		busy
 		kill `cat ${CLIENT_HOME}/Z2.pid`
+		RET=$?
 		sleep 1
-		deltext
-		ok
-		rm -f /var/lock/subsys/zope >/dev/null 2>&1
+		[ $RET -eq 0 ] && ok || died
+		rm -f /var/lock/subsys/zope ${CLIENT_HOME}/Z2.pid >/dev/null 2>&1
 	else
 		msg_not_running Zope
-		exit 1
 	fi
 	;;
   status)
-	if ps -p `cat ${CLIENT_HOME}/Z2.pid | awk '{print $2}'` >/dev/null; then
-		RETVAL=$?
-		nls "Zope (pid %s) is running" "`cat ${CLIENT_HOME}/Z2.pid`"
-	else     
-		msg_not_running Zope
-		RETVAL=1
+	if [ -f $PIDFILE ]; then
+		if ps -p `cat $PIDFILE` >/dev/null; then
+			RETVAL=$?
+			nls "%s (pid %s) is running..." Zope "`cat $PIDFILE`"
+		else
+			nls "%s dead but pid file exists" Zope
+			RETVAL=1
+		fi
+	else
+		if [ -f /var/lock/subsys/zope ]; then
+			nls "%s dead but subsys locked" Zope
+			RETVAL=2
+		else
+			nls "%s is stopped" Zope
+			RETVAL=3
+		fi
 	fi
 	;;
-  restart|reload)
+  restart|force-reload)
 	$0 stop
 	$0 start
+	exit $?
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|reload|status}"
-	exit 1
+	msg_usage "$0 {start|stop|restart|force-reload|status}"
+	exit 3
 	;;
 esac
 
