@@ -1,0 +1,13 @@
+diff -dur Zope-2.6.3-src.orig/lib/python/ZPublisher/HTTPResponse.py Zope-2.6.3-src/lib/python/ZPublisher/HTTPResponse.py
+--- Zope-2.6.3-src.orig/lib/python/ZPublisher/HTTPResponse.py	Thu Jan  8 22:13:13 2004
++++ Zope-2.6.3-src/lib/python/ZPublisher/HTTPResponse.py	Mon Sep 27 14:37:49 2004
+@@ -413,7 +413,7 @@
+         return self.use_HTTP_content_compression
+ 
+     def _encode_unicode(self,body,
+-                        charset_re=re.compile(r'text/[0-9a-z]+\s*;\s*' +
++                        charset_re=re.compile(r'(?:application|text)/[0-9a-z+-]+\s*;\s*' +
+                                               r'charset=([-_0-9a-z]+' +
+                                               r')(?:(?:\s*;)|\Z)',
+                                               re.IGNORECASE)):
+Only in Zope-2.6.3-src/lib/python/ZPublisher: HTTPResponse.py~
