@@ -1,4 +1,3 @@
-%include        /usr/lib/rpm/macros.python
 
 # TODO:
 # - check why initgroups() crashes on AMD64 and something, better than
