@@ -12,7 +12,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.0
 %define		sub_ver b3
-Release:	3.%{sub_ver}.2
+Release:	3.%{sub_ver}.3
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/%{name}/%{version}%{sub_ver}/%{version}%{sub_ver}/%{name}-%{version}-%{sub_ver}.tgz
@@ -88,8 +88,7 @@ eles ao invés desse RPM.
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 
 ./configure \
-	--prefix=/usr \
-	--optimize
+	--prefix=/usr
 
 %{__make}
 
@@ -103,7 +102,7 @@ install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} 
 	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}}
 
-%{__make} install INSTALL_FLAGS="--optimize=1 --root $RPM_BUILD_ROOT"
+%{__make} install INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
 
 mv $RPM_BUILD_ROOT%{_libdir}{/python,/zope}
 mv $RPM_BUILD_ROOT%{_bindir}/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
@@ -197,11 +196,11 @@ fi
 %attr(755,root,root) %{_bindir}/*
 %attr(755,root,root) %{_sbindir}/*
 %{_libdir}/zope
-%attr(771,root,root) %dir /var/run/zope
-%attr(751,root,zope) %dir /var/lib/zope
-%attr(751,root,zope) %dir /var/lib/zope/main
-%attr(771,root,root) %dir /var/log/zope
-%attr(771,root,zope) %dir /var/log/zope/main
+%attr(775,zope,zope) %dir /var/run/zope
+%attr(775,zope,zope) %dir /var/lib/zope
+%attr(775,zope,zope) %dir /var/lib/zope/main
+%attr(775,zope,zope) %dir /var/log/zope
+%attr(775,zope,zope) %dir /var/log/zope/main
 %attr(640,root,root) %dir /etc/zope
 %attr(640,root,root) %dir /etc/zope/skel
 %attr(640,root,root) %dir /etc/zope/main
