@@ -19,6 +19,7 @@ Source5:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
 Source6:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
 # Source6-md5:	0cddb5688fc0f886db468da08251fb81
 Source7:	http://www.zope.org/Documentation/Guides/%{name}-ProductTutorial.tar.gz
+# Source7-md5:	4b1b6f13826ecef3667ef54da948b867
 Source8:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
 # Source8-md5:	0344ca88acb8a71688d2925975a55443
 Source9:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
