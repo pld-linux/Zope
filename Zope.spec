@@ -42,7 +42,6 @@ Requires:	logrotate
 Requires:	python >= 2.2.3
 Requires:	python-modules >= 2.2.3
 Requires:	python-libs >= 2.2.3
-Requires:	Zope-Epoz
 %pyrequires_eq  python
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
