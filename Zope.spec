@@ -150,6 +150,8 @@ if [ ! -f /etc/zope/main/zope.conf ] ; then
 	echo "Creating initial 'main' instance..."
 	/usr/sbin/mkzopeinstance main zope:zope
 	echo "Instance created. Listening on 127.0.0.1:8080, initial user: 'zope' with password: 'zope'"
+else
+	echo "old /etc/zope/zope.conf detected - look at changes about upgrade!" >&2
 fi
 was_stopped=0
 for dir in /var/lib/zope/main /var/lib/zope ; do
