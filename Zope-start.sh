@@ -83,7 +83,7 @@ fi
 if [ "x$IP_ADDRESS" = "x" -o "x$IP_ADDRESS" = "x0" ]; then
     ipstr=" "
 else
-    ipstr="-a $IP_ADDRESS"
+    ipstr="-a '$IP_ADDRESS'"
 fi
 
 # show what we're going to do

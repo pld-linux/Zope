@@ -63,9 +63,10 @@ start_instances()
     for i in /etc/zope/instances/*
     do
 	unset_vars
+	INSTANCE_NAME=`basename $i`
+	echo "$INSTANCE_NAME" | egrep -q "rpmsave|rpmorig" && continue
 	. $i
 	PIDFILE=$INSTANCE_HOME/var/Z2.pid
-	INSTANCE_NAME=`basename $i`
 	if [ "x$INSTANCE_NAME" = "xmain" ]; then
 	    z_name="Zope"
 	else
