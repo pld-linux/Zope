@@ -21,6 +21,7 @@ Source6:	%{name}-runzope
 Source7:	%{name}-zopectl
 Patch0:		%{name}-python-2.3.2.patch
 Patch1:		%{name}-default_config.patch
+Patch2:		%{name}-instance_paths.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 2.2.3
 BuildRequires:	perl
@@ -75,6 +76,7 @@ eles ao invés desse RPM.
 %setup -q -n %{name}-%{version}-%{sub_ver}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
@@ -91,7 +93,7 @@ perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_
 %install
 rm -rf $RPM_BUILD_ROOT
 
-install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope} \
+install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} \
 	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}}
 
@@ -100,10 +102,12 @@ install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope} \
 mv $RPM_BUILD_ROOT%{_libdir}{/python,/zope}
 mv $RPM_BUILD_ROOT%{_bindir}/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
 mv $RPM_BUILD_ROOT%{_bindir}/*.py $RPM_BUILD_ROOT%{_libdir}/zope
-rm -rf $RPM_BUILD_ROOT/usr/doc/
 mv $RPM_BUILD_ROOT/usr/skel $RPM_BUILD_ROOT%{_sysconfdir}/zope
 mv $RPM_BUILD_ROOT{%{_prefix}/import/*,%{_sysconfdir}/zope/skel/import}
-rm -rf $RPM_BUILD_ROOT/etc/zope/skel/bin
+
+rm -rf $RPM_BUILD_ROOT/usr/doc/
+rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/log
+rm -f $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/bin/{runzope.bat,zopeservice.py}.in
 
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zope
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/zope
@@ -113,7 +117,8 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_sbindir}/mkzeoinstance
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sbindir}/runzope
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sbindir}/zopectl
 
-touch $RPM_BUILD_ROOT/var/log/zope/main.log
+touch $RPM_BUILD_ROOT/var/log/zope/main/event.log
+touch $RPM_BUILD_ROOT/var/log/zope/main/Z2.log
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -159,7 +164,7 @@ if [ -f /var/lock/subsys/zope ]; then
 else
 	echo "look at /etc/zope/main/zope.conf" >&2
 	echo "Run then \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
-	echo "you make create new Zope instances with mkzopeinstance" >&2
+	echo "you may create new Zope instances with mkzopeinstance" >&2
 fi
 
 %preun
@@ -189,10 +194,12 @@ fi
 %attr(771,root,root) %dir /var/lib/zope
 %attr(1771,root,zope) %dir /var/lib/zope/main
 %attr(771,root,root) %dir /var/log/zope
+%attr(771,root,zope) %dir /var/log/zope/main
 %attr(640,root,root) %dir /etc/zope
 %attr(640,root,root) %dir /etc/zope/skel
 %attr(640,root,root) %dir /etc/zope/main
 %attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/skel/*
 %attr(640,root,root) /etc/logrotate.d/zope
 %attr(640,root,root) /etc/sysconfig/zope
-%ghost /var/log/zope/main.log
+%ghost /var/log/zope/main/event.log
+%ghost /var/log/zope/main/Z2.log
