@@ -12,20 +12,20 @@ Source0:	http://www.zope.org/Products/%{name}/%{version}/%{name}-%{version}-src.
 Source1:	%{name}.init
 Source2:	%{name}.logrotate
 Source3:	%{name}-zserver.sh
-Source4:	http://www.zope.org/Documentation/Guides/ZCMG/ZCMG.html.tgz
+Source4:	http://zope.org/Documentation/Guides/ZCMG/Tarred%20HTML%202.1.1/ZCMG.html.tgz
 # Source4-md5:	4c52eebc2e874a0590ac9c04e222e9f1
-Source5:	http://www.zope.org/Documentation/Guides/DTML/DTML.html.tgz
-# Source5-md5:	10f363dd061a1af8d472c51c32fa0a0e
-Source6:	http://www.zope.org/Documentation/Guides/ZSQL/ZSQL.html.tgz
+Source5:	http://www.zope.org/Documentation/Guides/DTML/Compressed%20html%202.1.1/DTML.html.tgz
+#Source5-md5:	10f363dd061a1af8d472c51c32fa0a0e
+Source6:	http://www.zope.org/Documentation/Guides/ZSQL/2.1.1/ZSQL.html.tgz
 # Source6-md5:	0cddb5688fc0f886db468da08251fb81
-Source8:	http://www.zope.org/Documentation/Guides/ZDG/ZDG.html.tgz
+Source8:	http://www.zope.org/Documentation/Guides/ZDG/HTML%201.2/ZDG.html.tgz
 # Source8-md5:	0344ca88acb8a71688d2925975a55443
-Source9:	http://www.zope.org/Documentation/Guides/ZAG/ZAG.html.tgz
+Source9:	http://www.zope.org/Documentation/Guides/ZAG/HTML%201.0/ZAG.html.tgz
 # Source9-md5:	b28bfc4ba4bee880767fcf89d79532d2
-Source10:	http://www.zope.org/Documentation/Books/ZopeBook/current/ZopeBook.tgz
+Source10:	http://openbsd.secsup.org/distfiles/zopebook-2.5/ZopeBook.tgz
 # Source10-md5:	268c38a4c7d9f7334cdc98b0a152f8da
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 2.2
+BuildRequires:	python-devel >= 2.1
 BuildRequires:	perl
 PreReq:		rc-scripts
 Requires(pre): /usr/bin/getgid
