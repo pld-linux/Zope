@@ -147,8 +147,8 @@ touch $RPM_BUILD_ROOT/var/log/zope/main/Z2.log
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`getgid zope`" ]; then
-	if [ "`getgid zope`" != "112" ]; then
+if [ -n "`/usr/bin/getgid zope`" ]; then
+	if [ "`/usr/bin/getgid zope`" != "112" ]; then
 		echo "Error: group zope doesn't have gid=112. Correct this before installing zope." 1>&2
 		exit 1
 	fi
