@@ -34,7 +34,7 @@ Patch4:		%{name}-python24.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.159
+BuildRequires:	rpmbuild(macros) >= 1.202
 PreReq:		rc-scripts
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -150,24 +150,8 @@ touch $RPM_BUILD_ROOT/var/log/zope/main/Z2.log
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -n "`/usr/bin/getgid zope`" ]; then
-	if [ "`/usr/bin/getgid zope`" != "112" ]; then
-		echo "Error: group zope doesn't have gid=112. Correct this before installing zope." 1>&2
-		exit 1
-	fi
-else
-	echo "Making group zope"
-	/usr/sbin/groupadd -g 112 zope
-fi
-if [ -n "`/bin/id -u zope 2>/dev/null`" ]; then
-	if [ "`/bin/id -u zope`" != "112" ]; then
-		echo "Error: user zope doesn't have uid=112. Correct this before installing zope." 1>&2
-		exit 1
-	fi
-else
-	echo "Making user zope"
-	/usr/sbin/useradd -u 112 -d /var/lib/zope/main -s /bin/false -c "Zope User" -g zope zope
-fi
+%groupadd -g 112 zope
+%useradd -u 112 -d /var/lib/zope/main -s /bin/false -c "Zope User" -g zope zope
 
 %post
 /sbin/chkconfig --add zope
