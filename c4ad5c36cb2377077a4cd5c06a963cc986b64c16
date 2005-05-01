@@ -1,0 +1,8 @@
+- version 2.7b2
+- removed docs (added later other packages)
+- added skel (few files on the one arch)
+- this builds not work - some errors after zope start :)
+  TODO:
+- compiled to pyc, pyo
+- removed errors after start zope
+- look at this work by practical user Zope :) - i'm so stupid :)))
