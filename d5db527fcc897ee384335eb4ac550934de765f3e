@@ -1,0 +1,2 @@
+- added patch: fix for serving unicode documents with non text/*
+  content type (needed for proper XHTML serving) (made by Jajcus)
