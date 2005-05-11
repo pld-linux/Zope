@@ -34,7 +34,7 @@ Patch4:		%{name}-python24.patch
 URL:		http://www.zope.org/
 BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	perl-base
-BuildRequires:	rpmbuild(macros) >= 1.202
+BuildRequires:	rpmbuild(macros) >= 1.213
 PreReq:		rc-scripts
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
@@ -96,7 +96,7 @@ eles ao invés desse RPM.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%ifarch amd64 alpha
+%ifarch %{x8664} alpha
 %patch3 -p1
 %endif
 %patch4 -p1
