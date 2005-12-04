@@ -32,23 +32,23 @@ Patch2:		%{name}-pld_makefile_fix.patch
 Patch3:		%{name}-no_initgroups.patch
 Patch4:		%{name}-python24.patch
 URL:		http://www.zope.org/
-BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	perl-base
+BuildRequires:	python-devel >= 1:2.3.3
 BuildRequires:	rpmbuild(macros) >= 1.213
-PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
+Requires(postun):	/usr/sbin/groupdel
+Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires(postun):	/usr/sbin/groupdel
-Requires(postun):	/usr/sbin/userdel
-Requires(post,preun):	/sbin/chkconfig
 Requires:	expat >= 1.95.7
 Requires:	logrotate
 Requires:	python >= 2.3.3
-Requires:	python-modules >= 2.3.3
-Requires:	python-libs >= 2.3.3
 Requires:	python-PyXML >= 0.8.3
+Requires:	python-libs >= 2.3.3
+Requires:	python-modules >= 2.3.3
+Requires:	rc-scripts
 %pyrequires_eq	python
 Provides:	group(zope)
 Provides:	user(zope)
@@ -214,11 +214,11 @@ fi
 %attr(775,zope,zope) %dir /var/lib/zope/main
 %attr(775,zope,zope) %dir /var/log/zope
 %attr(775,zope,zope) %dir /var/log/zope/main
-%attr(640,root,root) %dir /etc/zope
-%attr(640,root,root) %dir /etc/zope/skel
-%attr(640,root,root) %dir /etc/zope/main
-%attr(640,root,root) %config(noreplace) %verify(not md5 size mtime) /etc/zope/skel/*
-%attr(640,root,root) %config(noreplace) %verify(not size mtime md5) /etc/logrotate.d/zope
-%attr(640,root,root) /etc/sysconfig/zope
+%attr(640,root,root) %dir %{_sysconfdir}/zope
+%attr(640,root,root) %dir %{_sysconfdir}/zope/skel
+%attr(640,root,root) %dir %{_sysconfdir}/zope/main
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zope/skel/*
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/zope
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) /etc/sysconfig/zope
 %ghost /var/log/zope/main/event.log
 %ghost /var/log/zope/main/Z2.log
