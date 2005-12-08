@@ -40,7 +40,7 @@ start_instances()
 
 	if [ -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
 		msg_already_running "Zope instance $INSTANCE_NAME"
-		continue	
+		continue
 	fi
 
 	run_cmd "Starting Zope instance $INSTANCE_NAME" "$INSTANCE_HOME"/bin/zopectl start
@@ -62,9 +62,9 @@ stop_instances()
 
 	if [ ! -f /var/lock/subsys/"zope-$INSTANCE_NAME" ]; then
 		msg_not_running "Zope instance $INSTANCE_NAME"
-		continue	
+		continue
 	fi
-	
+
 	run_cmd "Stopping Zope instance $INSTANCE_NAME" "$INSTANCE_HOME"/bin/zopectl stop
 	RET=$?
 	if [ $RET -eq 0 ]; then
