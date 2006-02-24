@@ -34,7 +34,7 @@ Patch4:		%{name}-python24.patch
 URL:		http://www.zope.org/
 BuildRequires:	perl-base
 BuildRequires:	python-devel >= 1:2.3.3
-BuildRequires:	rpmbuild(macros) >= 1.213
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
 Requires(postun):	/usr/sbin/userdel
@@ -155,25 +155,26 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add zope
+# TODO: move this migration to trigger
 if [ ! -f /etc/zope/main/zope.conf ] ; then
 	echo "Creating initial 'main' instance..."
 	/usr/sbin/mkzopeinstance main zope:zope
 	echo "Instance created. Listening on 127.0.0.1:8080, initial user: 'zope' with password: 'zope'"
 else
-	echo "old /etc/zope/zope.conf detected - look at changes about upgrade!" >&2
+	echo "Old /etc/zope/zope.conf detected - look at changes about upgrade!" >&2
 fi
 was_stopped=0
 for dir in /var/lib/zope/main /var/lib/zope ; do
 	if [ -f $dir/Data.fs ]; then
 		echo "Found the database in old location. Migrating..."
 		if [ -f /var/lock/subsys/zope ]; then
-			/etc/rc.d/init.d/zope stop >&2
+			/sbin/service zope stop >&2
 			was_stopped=1
 		fi
 		umask 022
 		[ -d /var/lib/zope/main ] && cd $dir && mv -f Data* /var/lib/zope/main/var 2>/dev/null
 		if [ "x$was_stopped" = "x1" ]; then
-			/etc/rc.d/init.d/zope start >&2
+			/sbin/service zope start >&2
 		fi
 		echo "Migration completed (new db location is /var/lib/zope/main/var)"
 		break
@@ -181,19 +182,17 @@ for dir in /var/lib/zope/main /var/lib/zope ; do
 done
 if [ -f /var/lock/subsys/zope ]; then
 	if [ "x$was_stopped" != "x1" ]; then
-		/etc/rc.d/init.d/zope restart >&2
+		/sbin/service zope restart >&2
 	fi
 else
 	echo "look at /etc/zope/main/zope.conf" >&2
-	echo "Run then \"/etc/rc.d/init.d/zope start\" to start Zope." >&2
-	echo "you may create new Zope instances with mkzopeinstance" >&2
+	echo "Run then \"/sbin/service zope start\" to start Zope." >&2
+	echo "You may create new Zope instances with mkzopeinstance" >&2
 fi
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/zope ]; then
-		/etc/rc.d/init.d/zope stop
-	fi
+	%service zope stop
 	/sbin/chkconfig --del zope
 fi
 
