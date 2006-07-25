@@ -1,10 +1,11 @@
-
 # TODO:
 # - check why initgroups() crashes on AMD64 and something, better than
 #   disabling initgroups() completely, with that
 # - no/more secure initial user/password settings (currently: zope/zope)
 # - ZEO support (mkzeoinstance is not tested and probably doesn't work)
 # - perl support?
+# - update to 2.9.x? rename to Zope27?
+# - how to apply the hotfix?
 
 Summary:	An application server and portal toolkit for building Web sites
 Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la construcción de sitios Web
@@ -13,7 +14,7 @@ Summary(pt_BR):	Um servidor de aplicações e um conjunto de ferramentas para cons
 Name:		Zope
 Version:	2.7.7
 # %%define		sub_ver b2
-Release:	3
+Release:	3.1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
@@ -26,6 +27,8 @@ Source5:	%{name}-mkzeoinstance
 Source6:	%{name}-runzope
 Source7:	%{name}-zopectl
 Source8:	%{name}-installzopeproduct
+Source9:	http://www.zope.org/Products/Zope/Hotfix-2006-07-05/Hotfix-20060705/Hotfix_20060705.tar.gz
+# Source9-md5:	6dec58130117fd860adc7fd58f8062e7
 Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
@@ -55,6 +58,13 @@ Provides:	user(zope)
 Obsoletes:	Zope-Hotfix = 040713
 Obsoletes:	Zope-Hotfix = 040714
 Obsoletes:	Zope-Hotfix = 050405
+# extracted from lib/python/App/Hotfixes.py
+Obsoletes:	Zope-Hotfix = 2001-09-28
+Obsoletes:	Zope-Hotfix = 2002-03-01
+Obsoletes:	Zope-Hotfix = 2002-04-15
+Obsoletes:	Zope-Hotfix = 2002-06-14
+# See Source9
+Obsoletes:	Zope-Hotfix = 20060704
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		zope_dir /usr/lib/zope
@@ -91,26 +101,23 @@ do Zope, outros sub-pacotes estão disponíveis, e você deveria instalar
 eles ao invés desse RPM.
 
 %prep
-
-%setup -q -n %{name}-%{version}-final
+%setup -q -a9 -n %{name}-%{version}-final
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %ifarch %{x8664} alpha
 %patch3 -p1
 %endif
+# how to apply the hotfix?
+#mv Hotfix_20060705 lib/python/Products
 
 %build
-perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
-
 ./configure \
 	--prefix=%{zope_dir} \
 	--with-python=%{__python} \
 	--optimize
 
 %{__make}
-
-perl -pi -e "s|data_dir\s+=\s+.*?join\(INSTANCE_HOME, 'var'\)|data_dir=INSTANCE_HOME|" lib/python/Globals.py
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -120,7 +127,7 @@ install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} 
 	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}} \
 	$RPM_BUILD_ROOT%{zope_dir}/bin
 
-ln -sfn /usr/bin/python $RPM_BUILD_ROOT%{zope_dir}/bin/python
+ln -sfn %{_bindir}/python $RPM_BUILD_ROOT%{zope_dir}/bin/python
 
 %{__make} install \
 	INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
@@ -155,12 +162,12 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add zope
 # TODO: move this migration to trigger
-if [ ! -f /etc/zope/main/zope.conf ] ; then
+if [ ! -f %{_sysconfdir}/zope/main/zope.conf ] ; then
 	echo "Creating initial 'main' instance..."
-	/usr/sbin/mkzopeinstance main zope:zope
+	%{_sbindir}/mkzopeinstance main zope:zope
 	echo "Instance created. Listening on 127.0.0.1:8080, initial user: 'zope' with password: 'zope'"
 else
-	echo "Old /etc/zope/zope.conf detected - look at changes about upgrade!" >&2
+	echo "Old %{_sysconfdir}/zope/zope.conf detected - look at changes about upgrade!" >&2
 fi
 was_stopped=0
 for dir in /var/lib/zope/main /var/lib/zope ; do
@@ -184,7 +191,7 @@ if [ -f /var/lock/subsys/zope ]; then
 		/sbin/service zope restart >&2
 	fi
 else
-	echo "look at /etc/zope/main/zope.conf" >&2
+	echo "look at %{_sysconfdir}/zope/main/zope.conf" >&2
 	echo "Run then \"/sbin/service zope start\" to start Zope." >&2
 	echo "You may create new Zope instances with mkzopeinstance" >&2
 fi
