@@ -33,7 +33,6 @@ Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
 Patch3:		%{name}-no_initgroups.patch
-Patch4:		%{name}-python24.patch
 URL:		http://www.zope.org/
 BuildRequires:	perl-base
 BuildRequires:	python-devel >= 1:2.3.3
