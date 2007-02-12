@@ -8,9 +8,9 @@
 # - how to apply the hotfix?
 
 Summary:	An application server and portal toolkit for building Web sites
-Summary(es.UTF-8):   Un servidor de aplicaciones y un conjunto de herramientas para la construcción de sitios Web
-Summary(pl.UTF-8):   Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
-Summary(pt_BR.UTF-8):   Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
+Summary(es.UTF-8):	Un servidor de aplicaciones y un conjunto de herramientas para la construcción de sitios Web
+Summary(pl.UTF-8):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
+Summary(pt_BR.UTF-8):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
 Version:	2.7.7
 # %%define		sub_ver b2
