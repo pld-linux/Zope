@@ -1,9 +1,9 @@
 %include        /usr/lib/rpm/macros.python
 
 Summary:	An application server and portal toolkit for building Web sites
-Summary(es):	Un servidor de aplicaciones y un conjunto de herramientas para la construcciÛn de sitios Web
-Summary(pl):	Serwer aplikacji i toolkit portalowy do tworzenia serwisÛw WWW
-Summary(pt_BR):	Um servidor de aplicaÁıes e um conjunto de ferramentas para construÁ„o de sites Web
+Summary(es.UTF-8):   Un servidor de aplicaciones y un conjunto de herramientas para la construcci√≥n de sitios Web
+Summary(pl.UTF-8):   Serwer aplikacji i toolkit portalowy do tworzenia serwis√≥w WWW
+Summary(pt_BR.UTF-8):   Um servidor de aplica√ß√µes e um conjunto de ferramentas para constru√ß√£o de sites Web
 Name:		Zope
 Version:	2.7.0
 %define		sub_ver b2
@@ -47,30 +47,30 @@ Python-based application server for building high-performance, dynamic
 web sites, using a powerful and simple scripting object model and
 high-performance, integrated object database.
 
-%description -l es
-Zope es una aplicaciÛn basada en Python, Open Source[tm], para la
-construcciÛn de sitios din·micos, usa un modelo de escritura de
-guiones poderoso y sencillo. Para instalar la aplicaciÛn Zope, instale
-ese paquete y despuÈs, Zope-server, para un servidor HTTP integrado
+%description -l es.UTF-8
+Zope es una aplicaci√≥n basada en Python, Open Source[tm], para la
+construcci√≥n de sitios din√°micos, usa un modelo de escritura de
+guiones poderoso y sencillo. Para instalar la aplicaci√≥n Zope, instale
+ese paquete y despu√©s, Zope-server, para un servidor HTTP integrado
 simple, Zope-pcgi, para uso con el servidor Apache. Si desea instalar
-solamente algunas partes de la aplicaciÛn Zope, est·n diponibles otros
-subpaquetes, usted debe instalar Èstos en vez de ese RPM.
+solamente algunas partes de la aplicaci√≥n Zope, est√°n diponibles otros
+subpaquetes, usted debe instalar √©stos en vez de ese RPM.
 
-%description -l pl
-Zope (Z Object Programming Environment - Obiektowe ¶rodowisko
+%description -l pl.UTF-8
+Zope (Z Object Programming Environment - Obiektowe ≈örodowisko
 Programistyczne Z) jest opartym o Pythona serwerem aplikacji do
-tworzenia wysoko wydajnych, dynamicznych serwisÛw WWW, przy uøyciu
-uøytecznego i prostego modelu obiektowego skryptÛw oraz wysoko
+tworzenia wysoko wydajnych, dynamicznych serwis√≥w WWW, przy u≈ºyciu
+u≈ºytecznego i prostego modelu obiektowego skrypt√≥w oraz wysoko
 wydajnej zintegrowanej obiektowej bazy danych.
 
-%description -l pt_BR
-Zope È uma aplicaÁ„o baseada em Python, Open Source[tm], para
-construÁ„o de sites din‚micos, usando um modelo de scripting poderoso
+%description -l pt_BR.UTF-8
+Zope √© uma aplica√ß√£o baseada em Python, Open Source[tm], para
+constru√ß√£o de sites din√¢micos, usando um modelo de scripting poderoso
 e simples Para instalar o Zope, instale esse pacote e depois, ou o
 Zope-server, para um servidor HTTP integrado simples, ou Zope-pcgi,
-para uso com o Apache. Se vocÍ quiser instalar apenas algumas partes
-do Zope, outros sub-pacotes est„o disponÌveis, e vocÍ deveria instalar
-eles ao invÈs desse RPM.
+para uso com o Apache. Se voc√™ quiser instalar apenas algumas partes
+do Zope, outros sub-pacotes est√£o dispon√≠veis, e voc√™ deveria instalar
+eles ao inv√©s desse RPM.
 
 %prep
 
