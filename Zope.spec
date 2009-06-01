@@ -12,13 +12,13 @@ Summary(es.UTF-8):	Un servidor de aplicaciones y un conjunto de herramientas par
 Summary(pl.UTF-8):	Serwer aplikacji i toolkit portalowy do tworzenia serwisów WWW
 Summary(pt_BR.UTF-8):	Um servidor de aplicações e um conjunto de ferramentas para construção de sites Web
 Name:		Zope
-Version:	2.7.7
+Version:	2.11.3
 # %%define		sub_ver b2
-Release:	6
+Release:	1
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
-# Source0-md5:	66876823e53fbd0d4a8a7262d7ce251b
+# Source0-md5:	208e235087d707ec0ff07a47cb43c786
 Source1:	%{name}.init
 Source2:	%{name}.sysconfig
 Source3:	%{name}.logrotate
@@ -133,7 +133,6 @@ ln -sfn %{_bindir}/python $RPM_BUILD_ROOT%{zope_dir}/bin/python
 
 mv $RPM_BUILD_ROOT%{zope_dir}/bin/zpasswd.py $RPM_BUILD_ROOT%{_sbindir}/zpasswd
 mv $RPM_BUILD_ROOT%{zope_dir}/skel $RPM_BUILD_ROOT%{_sysconfdir}/zope
-mv $RPM_BUILD_ROOT{%{zope_dir}/import/*,%{_sysconfdir}/zope/skel/import}
 
 rm -rf $RPM_BUILD_ROOT%{zope_dir}/doc
 rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/zope/skel/log
