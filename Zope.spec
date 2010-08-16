@@ -14,7 +14,7 @@ Summary(pt_BR.UTF-8):	Um servidor de aplicações e um conjunto de ferramentas p
 Name:		Zope
 Version:	2.11.3
 # %%define		sub_ver b2
-Release:	3
+Release:	4
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
@@ -32,7 +32,6 @@ Source9:	http://www.zope.org/Products/Zope/Hotfix-2006-07-05/Hotfix-20060705/Hot
 Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
-Patch3:		%{name}-no_initgroups.patch
 URL:		http://www.zope.org/
 BuildRequires:	perl-base
 BuildRequires:	python-devel >= 1:2.3.3
@@ -104,9 +103,6 @@ eles ao invés desse RPM.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
-%ifarch %{x8664} alpha
-%patch3 -p1
-%endif
 # how to apply the hotfix?
 #mv Hotfix_20060705 lib/python/Products
 
