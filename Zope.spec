@@ -14,7 +14,7 @@ Summary(pt_BR.UTF-8):	Um servidor de aplicações e um conjunto de ferramentas p
 Name:		Zope
 Version:	2.11.3
 # %%define		sub_ver b2
-Release:	2
+Release:	3
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
