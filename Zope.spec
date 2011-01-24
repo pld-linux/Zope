@@ -33,8 +33,9 @@ Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
 URL:		http://www.zope.org/
-BuildRequires:	perl-base
 BuildRequires:	python-devel >= 1:2.3.3
+BuildRequires:	python-modules
+BuildRequires:	rpm-pythonprov
 BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
@@ -122,7 +123,7 @@ install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} 
 	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}} \
 	$RPM_BUILD_ROOT%{zope_dir}/bin
 
-ln -sfn %{_bindir}/python $RPM_BUILD_ROOT%{zope_dir}/bin/python
+ln -sfn %{__python} $RPM_BUILD_ROOT%{zope_dir}/bin/python
 
 %{__make} install \
 	INSTALL_FLAGS="--root $RPM_BUILD_ROOT"
