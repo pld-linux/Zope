@@ -14,7 +14,7 @@ Summary(pt_BR.UTF-8):	Um servidor de aplicações e um conjunto de ferramentas p
 Name:		Zope
 Version:	2.11.8
 # %%define		sub_ver b2
-Release:	1
+Release:	2
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
@@ -29,6 +29,7 @@ Source7:	%{name}-zopectl
 Source8:	%{name}-installzopeproduct
 Source9:	http://www.zope.org/Products/Zope/Hotfix-2006-07-05/Hotfix-20060705/Hotfix_20060705.tar.gz
 # Source9-md5:	6dec58130117fd860adc7fd58f8062e7
+Source10:	%{name}.tmpfiles
 Patch0:		%{name}-default_config.patch
 Patch1:		%{name}-instance_paths.patch
 Patch2:		%{name}-pld_makefile_fix.patch
@@ -121,7 +122,8 @@ rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/var/lib/zope/main,/var/run/zope,/var/log/zope/main} \
 	$RPM_BUILD_ROOT{/etc/logrotate.d,/etc/sysconfig,/etc/rc.d/init.d} \
 	$RPM_BUILD_ROOT{%{_sysconfdir}/zope/main,%{_sbindir}} \
-	$RPM_BUILD_ROOT%{zope_dir}/bin
+	$RPM_BUILD_ROOT%{zope_dir}/bin \
+	$RPM_BUILD_ROOT/usr/lib/tmpfiles.d
 
 ln -sfn %{__python} $RPM_BUILD_ROOT%{zope_dir}/bin/python
 
@@ -143,6 +145,7 @@ install %{SOURCE5} $RPM_BUILD_ROOT%{_sbindir}/mkzeoinstance
 install %{SOURCE6} $RPM_BUILD_ROOT%{_sbindir}/runzope
 install %{SOURCE7} $RPM_BUILD_ROOT%{_sbindir}/zopectl
 install %{SOURCE8} $RPM_BUILD_ROOT%{_sbindir}/installzopeproduct
+install %{SOURCE10} $RPM_BUILD_ROOT/usr/lib/tmpfiles.d/%{name}.conf
 
 touch $RPM_BUILD_ROOT/var/log/zope/main/event.log
 touch $RPM_BUILD_ROOT/var/log/zope/main/Z2.log
@@ -209,6 +212,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/zope
 %attr(755,root,root) %{_sbindir}/*
 %{zope_dir}
+/usr/lib/tmpfiles.d/%{name}.conf
 %attr(775,zope,zope) %dir /var/run/zope
 %attr(775,zope,zope) %dir /var/lib/zope
 %attr(775,zope,zope) %dir /var/lib/zope/main
