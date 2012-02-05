@@ -1,5 +1,6 @@
 /var/log/zope/*/*.log {
-create 644 zope zope	
+	su zope zope	
+	create 644 zope zope	
 	postrotate
 		/sbin/service zope restart >/dev/null 2>&1
 	endscript

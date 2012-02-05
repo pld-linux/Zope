@@ -14,7 +14,7 @@ Summary(pt_BR.UTF-8):	Um servidor de aplicações e um conjunto de ferramentas p
 Name:		Zope
 Version:	2.11.8
 # %%define		sub_ver b2
-Release:	3
+Release:	4
 License:	Zope Public License (ZPL)
 Group:		Networking/Daemons
 Source0:	http://www.zope.org/Products/Zope/%{version}/%{name}-%{version}-final.tgz
@@ -55,6 +55,7 @@ Requires:	rc-scripts
 %pyrequires_eq	python
 Provides:	group(zope)
 Provides:	user(zope)
+Conflicts:	logrotate < 3.8.0
 Obsoletes:	Zope-Hotfix = 040713
 Obsoletes:	Zope-Hotfix = 040714
 Obsoletes:	Zope-Hotfix = 050405
