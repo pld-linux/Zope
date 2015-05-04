@@ -59,11 +59,6 @@ Conflicts:	logrotate < 3.8.0
 Obsoletes:	Zope-Hotfix = 040713
 Obsoletes:	Zope-Hotfix = 040714
 Obsoletes:	Zope-Hotfix = 050405
-# extracted from lib/python/App/Hotfixes.py
-Obsoletes:	Zope-Hotfix = 2001-09-28
-Obsoletes:	Zope-Hotfix = 2002-03-01
-Obsoletes:	Zope-Hotfix = 2002-04-15
-Obsoletes:	Zope-Hotfix = 2002-06-14
 # See Source9
 Obsoletes:	Zope-Hotfix = 20060704
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
